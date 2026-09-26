@@ -1,4 +1,4 @@
-// StarNet — native desktop shell (Tauri v2).
+// TJ Crew Station — native desktop shell (Tauri v2).
 //
 // Wraps the existing browser app: spawns the zero-dependency Node sidecar on a
 // private loopback port, waits for it to listen, then opens that URL in a native
@@ -302,7 +302,7 @@ impl KeepAwakeHandle {
         };
 
         let mut reason: Vec<u16> =
-            "StarNet scheduled tasks are allowed to run while the app is open"
+            "TJ Crew Station scheduled tasks are allowed to run while the app is open"
                 .encode_utf16()
                 .chain(std::iter::once(0))
                 .collect();
@@ -1995,15 +1995,15 @@ fn show_startup_failure_dialog(startup_log: &Option<PathBuf>) -> bool {
         None => "No startup log path was available.".to_string(),
     };
     let body = format!(
-        "StarNet could not start its local engine.\n\n\
+        "TJ Crew Station could not start its local engine.\n\n\
          The engine exited or did not become ready. Possible causes include unavailable workspace \
          files, a blocked Node runtime, or a port that could not be opened.\n\n\
          {log_line}\n\n\
-         Click Retry to try starting the engine again, or Cancel to close StarNet."
+         Click Retry to try starting the engine again, or Cancel to close TJ Crew Station."
     );
     let to_wide = |s: &str| -> Vec<u16> { s.encode_utf16().chain(std::iter::once(0)).collect() };
     let text = to_wide(&body);
-    let caption = to_wide("StarNet — startup failed");
+    let caption = to_wide("TJ Crew Station — startup failed");
     // SYSTEMMODAL + SETFOREGROUND so the box is seen even though the main window isn't up yet.
     let result = unsafe {
         MessageBoxW(
@@ -2038,9 +2038,9 @@ fn report_window_startup_failure(log: &Option<PathBuf>, detail: &str) {
             .as_ref()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "unavailable".into());
-        let text: Vec<u16> = format!("StarNet's window could not finish starting.\n\n{detail}\n\nQuit StarNet from its tray icon and reopen it. If this persists, include startup.log in your bug report:\n{path}")
+        let text: Vec<u16> = format!("TJ Crew Station's window could not finish starting.\n\n{detail}\n\nQuit TJ Crew Station from its tray icon and reopen it. If this persists, include startup.log in your bug report:\n{path}")
             .encode_utf16().chain(std::iter::once(0)).collect();
-        let title: Vec<u16> = "StarNet — window startup"
+        let title: Vec<u16> = "TJ Crew Station — window startup"
             .encode_utf16()
             .chain(std::iter::once(0))
             .collect();
@@ -2215,7 +2215,7 @@ fn spawn_guardian(app: AppHandle) {
                             count = count.saturating_add(1);
                             if count >= GUARDIAN_MAX_CONSECUTIVE_CRASHES {
                                 let reason = format!(
-                                    "crash-loop: the station service exited {count} times in {} minutes (last exit code {code:?}); the guardian stopped restarting it. Use RESTART STATION SERVICE to try again, or quit StarNet fully and reopen it.",
+                                    "crash-loop: the station service exited {count} times in {} minutes (last exit code {code:?}); the guardian stopped restarting it. Use RESTART STATION SERVICE to try again, or quit TJ Crew Station fully and reopen it.",
                                     GUARDIAN_CRASH_WINDOW.as_secs() / 60
                                 );
                                 log_startup(
@@ -2720,26 +2720,26 @@ fn spawn_tray_updater(app: AppHandle) {
                         l.reasons.join(", ")
                     };
                     (
-                        format!("StarNet — {summary}"),
+                        format!("TJ Crew Station — {summary}"),
                         format!("Background: {summary}"),
                     )
                 }
                 LifecycleProbe::Armed(_) if close_to_tray => (
-                    "StarNet — idle in tray".to_string(),
-                    "Background: idle — close keeps StarNet running".to_string(),
+                    "TJ Crew Station — idle in tray".to_string(),
+                    "Background: idle — close keeps TJ Crew Station running".to_string(),
                 ),
                 LifecycleProbe::NotRunning if close_to_tray => (
-                    "StarNet — engine offline (kept in tray)".to_string(),
-                    "Background: engine offline — close keeps StarNet running".to_string(),
+                    "TJ Crew Station — engine offline (kept in tray)".to_string(),
+                    "Background: engine offline — close keeps TJ Crew Station running".to_string(),
                 ),
                 LifecycleProbe::Armed(_) | LifecycleProbe::NotRunning => (
                     // Nothing armed (or no engine at all): closing quits — the same rule the close path applies.
-                    "StarNet — idle (closing quits)".to_string(),
+                    "TJ Crew Station — idle (closing quits)".to_string(),
                     "Background: idle — closing quits".to_string(),
                 ),
                 LifecycleProbe::Ambiguous => (
                     // Alive but the poll failed — honest "unknown", mirroring the close path's fail-open.
-                    "StarNet — status unavailable (close keeps it running)".to_string(),
+                    "TJ Crew Station — status unavailable (close keeps it running)".to_string(),
                     "Background: status unavailable — close keeps it running".to_string(),
                 ),
             };
@@ -3198,7 +3198,7 @@ async fn starnet_open_artifact(
         "Open this file with its system default app?\n\n{}",
         artifact.display()
     );
-    if !confirm_host_launch(&app, "StarNet — open file", &body, "Open") {
+    if !confirm_host_launch(&app, "TJ Crew Station — open file", &body, "Open") {
         return Err(format!("open {HOST_GESTURE_DECLINED}"));
     }
 
@@ -3246,7 +3246,7 @@ async fn starnet_reveal_path(
         },
         artifact.display()
     );
-    if !confirm_host_launch(&app, "StarNet — reveal in folder", &body, "Reveal") {
+    if !confirm_host_launch(&app, "TJ Crew Station — reveal in folder", &body, "Reveal") {
         return Err(format!("reveal {HOST_GESTURE_DECLINED}"));
     }
 
@@ -3389,7 +3389,7 @@ fn open_external_url(url: String) -> Result<(), String> {
 /// exit restores it.
 static FS_RESTORE_MAXIMIZE: AtomicBool = AtomicBool::new(false);
 
-/// Toggle the main StarNet desktop window between windowed and fullscreen mode.
+/// Toggle the main TJ Crew Station desktop window between windowed and fullscreen mode.
 #[tauri::command]
 fn starnet_toggle_fullscreen(app: AppHandle) -> Result<bool, String> {
     let win = app
@@ -3410,7 +3410,7 @@ fn starnet_toggle_fullscreen(app: AppHandle) -> Result<bool, String> {
     Ok(next)
 }
 
-/// Prevent idle system sleep while StarNet is open. This does not force the
+/// Prevent idle system sleep while TJ Crew Station is open. This does not force the
 /// display to stay on; it only keeps scheduled tasks from being paused by OS sleep.
 #[tauri::command]
 fn starnet_set_keep_awake(
@@ -3713,7 +3713,7 @@ struct LifecycleView {
 fn starnet_restart_sidecar(state: State<AppState>) -> Result<bool, String> {
     let st: &AppState = state.inner();
     if st.shutting_down.load(Ordering::SeqCst) {
-        return Err("StarNet is shutting down".to_string());
+        return Err("TJ Crew Station is shutting down".to_string());
     }
     let _recovery = begin_recovery(st)?;
     log_startup(
@@ -3772,7 +3772,7 @@ fn starnet_start_fresh(
 ) -> Result<FreshStartView, String> {
     let st: &AppState = state.inner();
     if st.shutting_down.load(Ordering::SeqCst) {
-        return Err("StarNet is shutting down".to_string());
+        return Err("TJ Crew Station is shutting down".to_string());
     }
     let _recovery = begin_recovery(st)?;
     log_startup(
@@ -4040,7 +4040,7 @@ fn main() {
             // the E-STOP (reaches background work even with the window closed); Quit drains + kills the sidecar
             // and exits. Built here so it exists before the window, so a close-to-tray has somewhere to live.
             {
-                let open_item = MenuItem::with_id(app, "lifecycle_open", "Open StarNet", true, None::<&str>)?;
+                let open_item = MenuItem::with_id(app, "lifecycle_open", "Open TJ Crew Station", true, None::<&str>)?;
                 let status_item = MenuItem::with_id(
                     app,
                     "lifecycle_status",
@@ -4051,11 +4051,11 @@ fn main() {
                     None::<&str>,
                 )?;
                 let pause_item = MenuItem::with_id(app, "lifecycle_pause", "Pause Automation (E-STOP)", true, None::<&str>)?;
-                let quit_item = MenuItem::with_id(app, "lifecycle_quit", "Quit StarNet", true, None::<&str>)?;
+                let quit_item = MenuItem::with_id(app, "lifecycle_quit", "Quit TJ Crew Station", true, None::<&str>)?;
                 let sep = PredefinedMenuItem::separator(app)?;
                 let menu = Menu::with_items(app, &[&open_item, &status_item, &sep, &pause_item, &quit_item])?;
                 let mut tray_builder = TrayIconBuilder::with_id("starnet-tray")
-                    .tooltip("StarNet")
+                    .tooltip("TJ Crew Station")
                     .menu(&menu)
                     .show_menu_on_left_click(false)
                     .on_menu_event(|app, event| on_tray_menu(app, event.id.as_ref()))
