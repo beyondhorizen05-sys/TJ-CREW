@@ -18,7 +18,7 @@ const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
 
-const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8');
+const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8').replace(/\r\n/g, '\n');
 const shimSrc = app('data-shim.js'), worldSrc = app('world.js'), appSrc = app('app.js');
 
 /* ---- 1. THE CATALOG: extract + eval the pure DATA.SKINS literal and prove its shape ---- */

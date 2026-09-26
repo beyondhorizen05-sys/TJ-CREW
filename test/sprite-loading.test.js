@@ -11,7 +11,7 @@ const planned = Object.values(grouped).flat();
 const initial = Plan.initialTracks(grouped, ['blank', 'ultron', 'blank']);
 const totalFrames = Plan.frameCount(all);
 const initialFrames = Plan.frameCount(initial);
-const loaderSource = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'js', 'assets.js'), 'utf8');
+const loaderSource = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'js', 'assets.js'), 'utf8').replace(/\r\n/g, '\n');
 const worldSource = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'world.js'), 'utf8');
 const appHtml = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'index.html'), 'utf8');
 

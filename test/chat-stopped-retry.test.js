@@ -9,7 +9,7 @@ const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
 
-const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8').replace(/\r\n/g, '\n');
 
 // The deliberate-stop branch owns the recovery offer. Network errors use their classified action;
 // a Commander stop is not an error and must use the plain existing Try again action.

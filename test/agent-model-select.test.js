@@ -8,7 +8,7 @@
 'use strict';
 const A = require('./_assert.js');
 const fs = require('fs'); const path = require('path');
-const app = (f) => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8');
+const app = (f) => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8').replace(/\r\n/g, '\n');
 const appjs = app('app.js'), ui = app('stationui.js'), mkt = app('marketplace.js'), dock = app('modeldock.js'), world = app('world.js'), chat = app('chat.js');
 const html = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'index.html'), 'utf8');
 const ModelDock = require('../frontend/app/modeldock.js');

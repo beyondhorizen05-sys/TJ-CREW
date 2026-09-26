@@ -24,7 +24,7 @@ const EXTRA_IDS = OAUTH_IDS.filter(id => id !== 'codex');   // codex keeps liter
 A.ok(OAUTH_IDS.includes('codex') && OAUTH_IDS.includes('grok') && OAUTH_IDS.includes('kimi'),
   'sanity: the registry ships the known device-OAuth trio (codex/grok/kimi)');
 
-const read = f => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+const read = f => fs.readFileSync(path.join(__dirname, '..', f), 'utf8').replace(/\r\n/g, '\n');
 const sidecarSrc = read('sidecar/index.js');
 const appSrc = read('frontend/app/app.js');
 const harnessSrc = read('frontend/app/harness.js');

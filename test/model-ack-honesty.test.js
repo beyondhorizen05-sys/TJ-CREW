@@ -15,7 +15,7 @@ const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
 
-const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8').replace(/\r\n/g, '\n');
 
 // ---- pure judgment: extract modelAckWarning and run it ----
 const pure = /function\s+modelAckWarning\s*\(id,\s*list\)\s*\{([\s\S]*?)\n  \}/.exec(src);

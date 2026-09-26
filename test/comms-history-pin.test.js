@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const A = require('./_assert.js');
 
-const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8').replace(/\r\n/g, '\n');
 
 A.ok(/let historyPinSeq = 0, historyPinPending = 0/.test(src),
   'history loads own a distinct pending bottom-pin token');

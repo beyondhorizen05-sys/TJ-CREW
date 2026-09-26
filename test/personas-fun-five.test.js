@@ -57,7 +57,7 @@ assert.equal(set('lead', 'invalid'), false);
 set('worker', 'unhinged'); assert.equal(worker.voiceTraits.humor, 0, 'preset changes preserve explicit tuning');
 set('worker', 'unhinged', { traits: {}, custom: '' }); assert.equal(P.effective(worker.personaId, worker.voiceTraits).humor, 3, 'reset restores defaults');
 // Real-time instructions cannot append an untuned raw persona after a customized system prompt.
-const voice = read('frontend/app/voice-live.js');
+const voice = read('frontend/app/voice-live.js').replace(/\r\n/g, '\n');
 const instructions = voice.match(/function voiceInstructions\(\) \{[\s\S]*?\n  \}/)[0];
 const spokenAgent = { name: 'Test', personaId: 'unhinged', voiceTraits: { profanity: 0 }, customVoice: 'Use formal language.' };
 spokenAgent.systemPrompt = P.compose(spokenAgent.personaId, spokenAgent.voiceTraits, spokenAgent.customVoice);

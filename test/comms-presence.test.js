@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const C = require('../frontend/app/channels.js');
 
-const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8').replace(/\r\n/g, '\n');
 
 /* ---------- 1. a resolved card is history, never the next run's live card ---------- */
 // presenceCard() must check for the resolved class and shed the id instead of reusing the card.

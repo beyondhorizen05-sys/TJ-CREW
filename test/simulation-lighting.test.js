@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const A = require('./_assert.js');
 
-const read = name => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', name), 'utf8');
+const read = name => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', name), 'utf8').replace(/\r\n/g, '\n');
 const bake = read('stationbake.js');
 const world = read('world.js');
 const build = read('build.js');
@@ -112,6 +112,6 @@ for(const [mode,limit] of [['screen',.031],['pulse',.041],['fire',.101],['steady
   A.eq(light(100,f,true,true).a,1,mode+' reduced motion stays steady');
 }
 for(const file of ['world.js','build.js','propsprites.js','stationbake.js','crtlab.js']) {
-  A.eq(read(file),fs.readFileSync(path.join(__dirname,'..','website','app','app',file),'utf8'),file+' website parity');
+  A.eq(read(file),fs.readFileSync(path.join(__dirname,'..','website','app','app',file),'utf8').replace(/\r\n/g, '\n'),file+' website parity');
 }
 A.report('simulation-lighting');

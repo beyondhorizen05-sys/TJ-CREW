@@ -50,7 +50,7 @@ const writeDurable = ({ fs }, file, data) => { fs.writeFileSync(file, data); };
   A.ok(s3.hasGrant('nova') === false, 'the cleared grant also survives a restart');
 
   /* ---- 2. THE UI→ROUTE WIRE (source-lock) ---- */
-  const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8');
+  const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8').replace(/\r\n/g, '\n');
   const ui = app('stationui.js'), appjs = app('app.js');
 
   A.ok(/id="ag-workshop-on"/.test(ui), 'the dossier renders the #ag-workshop-on away-workshop checkbox');

@@ -28,7 +28,7 @@ const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
 
-const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8');
+const app = f => fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', f), 'utf8').replace(/\r\n/g, '\n');
 
 /* Strip block + line comments so every assertion below binds to real CODE. Naive on purpose:
    it only needs to be safe for these three files, and it errs toward deleting (a stripper that

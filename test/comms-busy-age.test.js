@@ -4,7 +4,7 @@ const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
 
-const src = fs.readFileSync(path.join(__dirname, '../sidecar/index.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '../sidecar/index.js'), 'utf8').replace(/\r\n/g, '\n');
 const match = /function\s+formatRunHolderAge\s*\(ageMs\)\s*\{([\s\S]*?)\n\}/.exec(src);
 A.ok(match, 'sidecar exposes one bounded formatter for holder age copy');
 // This formatter is intentionally pure. Evaluate only its body, not the ambient-I/O sidecar.
