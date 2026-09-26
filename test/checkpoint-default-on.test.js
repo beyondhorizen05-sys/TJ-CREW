@@ -5,7 +5,7 @@
 const A = require('./_assert.js');
 const fs = require('fs');
 const path = require('path');
-const src = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
+const src = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8').replace(/\r\n/g, '\n');
 
 const m = /function checkpointsEnabledFromEnv\(raw\) \{[\s\S]*?\n\}\n/.exec(src);
 A.ok(m, 'index.js defines checkpointsEnabledFromEnv');

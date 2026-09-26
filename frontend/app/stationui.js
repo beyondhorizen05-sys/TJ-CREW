@@ -7962,10 +7962,10 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // EL-11 FIX 1: the sidecar is REFUSING writes — this workspace was written by a NEWER StarNet. Persistent
       // red dot + a one-time visible line; never lets a refused write read as a healthy backup.
       d.classList.add('degraded');
-      d.title = 'this station’s data was written by a newer StarNet — update the app. Until then, changes are NOT being backed up.';
+      d.title = 'this station’s data was written by a newer TJ Crew Station — update the app. Until then, changes are NOT being backed up.';
       if (!degradedNotified) {
         degradedNotified = true;
-        try { notify('This station’s data was written by a newer StarNet — update the app. Until you do, your changes are NOT being backed up.', 'bad'); } catch (_) {}
+        try { notify('This station’s data was written by a newer TJ Crew Station — update the app. Until you do, your changes are NOT being backed up.', 'bad'); } catch (_) {}
       }
     } else if (h && h.stale) {
       d.classList.add('stale');

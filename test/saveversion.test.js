@@ -123,14 +123,14 @@ function futureRaw(over) {
 }
 
 // ============================================================================
-// 3. backup.js validate() — refuse a backup file from a newer StarNet
+// 3. backup.js validate() — refuse a backup file from a newer station build
 // ============================================================================
 {
   const goodStore = { 'starnet.save': JSON.stringify({ schema: 'starnet.save', version: Save.CURRENT, agent: { name: 'NOVA' } }) };
 
   // future backup version → refused with a clear string the import UI surfaces.
   const err = Backup.validate({ schema: 'starnet.backup', version: Backup.VERSION + 1, store: goodStore });
-  A.ok(typeof err === 'string' && /newer StarNet/i.test(err), 'validate() refuses a future-version backup with a clear message');
+  A.ok(typeof err === 'string' && /newer TJ Crew Station/i.test(err), 'validate() refuses a future-version backup with a clear message');
 
   // applyBundle refuses it too (never writes any key) — validate() gates it.
   localStorage.clear();

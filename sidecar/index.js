@@ -745,7 +745,7 @@ const NIGHTSHIFT_AGENT = String(ENV('NIGHTSHIFT_AGENT') || 'agent').trim() || 'a
 // ≈8-min single-run worst-case bound; env-tunable. Per-worker spend is still capped by ORCH_PER_WORKER.
 const ORCH_DISPATCH_TIMEOUT_MS = num(ENV('DISPATCH_TIMEOUT_MS'), CRON_MAX_RUN_MS);
 const CRON_DEFAULT_MODEL = String(ENV('DEFAULT_MODEL') || '').trim();
-const CRON_PERSONA = 'You are an autonomous STARNET station agent running a SCHEDULED routine — no human is watching. '
+const CRON_PERSONA = 'You are an autonomous TJ Crew station agent running a SCHEDULED routine — no human is watching. '
   + 'Carry out the task with your REAL tools (web search/read, files, memory); ground every factual claim in what the '
   + 'tools actually return and cite sources; save any durable deliverable to your workspace with fs_write. Be concise. '
   + 'If there is genuinely nothing new or noteworthy to report this run, reply with EXACTLY "[SILENT]" and nothing else.';
@@ -3210,7 +3210,7 @@ function hardlineFloor(call) {
    which flips THAT chat to surface:'interactive' and answers the prompt over an inline keyboard (C6; the
    pause/resolve stays here in channelAskConsent/channelResolveConsent, the hub only renders and routes the
    tap). Opt-in: nothing starts unless the Commander connects (or env is set). */
-const TELEGRAM_PERSONA = 'You are the Commander\'s AI agent aboard the STARNET station, reachable over Telegram. '
+const TELEGRAM_PERSONA = 'You are the Commander\'s AI agent aboard the TJ Crew station, reachable over Telegram. '
   + 'Address the user as "Commander", keep a spark of personality, and keep replies concise and chat-friendly. '
   + 'When the Commander gives you a task you have REAL tools (web search/read, files, memory) — use them and '
   + 'report what you actually found; never claim you cannot act.';
@@ -8615,7 +8615,7 @@ function stopAllTelegramBots() { for (const id of [...telegramBots.keys()]) stop
 // H6.2: Discord — the adapter shipped fully-tested but the host never started it. Wire it the SAME way as
 // Telegram, but through the generic channelRegistry/wireChannel so there is one inbound->runOnce path. The live
 // gateway connects over a real WebSocket from the bot token (transport default); everything else is the shared hub.
-const DISCORD_PERSONA = 'You are the Commander\'s AI agent aboard the StarNet station, reachable over Discord. '
+const DISCORD_PERSONA = 'You are the Commander\'s AI agent aboard the TJ Crew station, reachable over Discord. '
   + 'Address the user as "Commander", keep a spark of personality, and keep replies concise and chat-friendly. '
   + 'When the Commander gives you a task you have REAL tools (web search/read, files, memory) — use them and '
   + 'report what you actually found; never claim you cannot act.';
@@ -8864,7 +8864,7 @@ async function handleDevInbound(req, res) {
    ids, signal gets the signal-cli REST endpoint+account. Adding channel N+1 stays a registry row, not a fork. ---- */
 const GENERIC_CHANNEL_IDS = ['slack', 'matrix', 'signal'];
 function channelPersona(label) {
-  return 'You are the Commander\'s AI agent aboard the STARNET station, reachable over ' + label + '. '
+  return 'You are the Commander\'s AI agent aboard the TJ Crew station, reachable over ' + label + '. '
     + 'Address the user as "Commander", keep a spark of personality, and keep replies concise and chat-friendly. '
     + 'When the Commander gives you a task you have REAL tools (web search/read, files, memory) — use them and '
     + 'report what you actually found; never claim you cannot act.';
@@ -10076,7 +10076,7 @@ function handleRoutingSampleStatus(_req, res) {
    additionalProperties:false — re-proven by validate() in test/routing.sample.e2e.test.js). ---- */
 const SAMPLE_CHAT = 'sample';
 const SAMPLE_TEXT = 'SAMPLE JOB: summarize what this work line does, in three sentences.';
-const SAMPLE_PERSONA = 'You are an agent aboard the STARNET station. This is a clearly-labeled SAMPLE JOB — a small test '
+const SAMPLE_PERSONA = 'You are an agent aboard the TJ Crew station. This is a clearly-labeled SAMPLE JOB — a small test '
   + 'crate the Commander sent through the work line to prove it runs end to end. Do the small task directly and '
   + 'report the result clearly, in a few sentences.';
 let sampleHub = null;        // lazy singleton, one per station — mirrors getDevHub
