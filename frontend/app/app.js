@@ -2164,12 +2164,11 @@ const App = (() => {
     refreshOAuthGenesisStatus(pid);
   }
 
-  /* ---------- STARNET MANAGED on the genesis screen ----------
-     The subscription path for people who never want to see an API key: buy on starnetos.com, then the
-     connect screen links this station to that account with ONE confirmed code — the same sidecar engine
-     the STORE uses (/api/credits/link/*), painted into #starnet-block. The chip itself stays HIDDEN
-     until the sidecar reports a cloud seam (linked or linkable): a build with no cloud must not offer
-     a subscription it cannot link, so a CLOUD_LIVE=false install keeps a starnet-free connect screen. */
+  /* ---------- provider status on the genesis screen ----------
+     No managed-subscription offer exists in this product: the connect screen is BYOK /
+     OAuth sign-in / local model only. revealStarnetGenesis survives as a STATUS read for
+     stations whose saved provider is the legacy managed id, so WAKE gating and the
+     balance display keep working for them. */
   let starnetLinked = false;          // last /api/credits truth — the WAKE gate reads this
   // last known managed balance (null = the service hasn't reported one) + where to buy. WAKE runs a REAL call
   // through managed admission, which refuses a $0 wallet before any model is reached — so a linked-but-empty
@@ -2179,7 +2178,7 @@ const App = (() => {
   let _starnetBalancePoll = null;
   function stopStarnetBalancePoll() { if (_starnetBalancePoll) { clearInterval(_starnetBalancePoll); _starnetBalancePoll = null; } }
   function starnetOutOfCredit() { return starnetLinked && typeof starnetBalanceUsd === 'number' && !(starnetBalanceUsd > 0); }
-  let userPickedProvider = false;     // a real chip click — the auto-promote below must never override it
+  let userPickedProvider = false;     // a real chip click marks the user's explicit choice
   let _starnetLinkPoll = null, _starnetLinkPollBusy = false, _starnetLinkStarting = false, _starnetLinkGeneration = 0, _starnetStatusSeq = 0;
   function stopStarnetLinkPoll() {
     _starnetLinkGeneration++;
@@ -2192,12 +2191,9 @@ const App = (() => {
     try { const j = await Harness.api.get('/api/credits?history=0'); linked = !!(j && j.configured); } catch (_) {}
     if (!linked) { try { const j = await Harness.api.get('/api/credits/linkable'); linkable = !!(j && j.available); } catch (_) {} }
     starnetLinked = linked;
-    const b = document.querySelector('.provider-row .prov[data-prov="starnet"]');
-    if (b) b.classList.toggle('hidden', !(linked || linkable));
-    // THE PROMOTED START: on a fresh create (never a resume, never over a real click) the revealed
-    // hero becomes the default pick — the subscription path leads the funnel the moment it exists.
-    if (autoPick && (linked || linkable) && !userPickedProvider && pickedProvider !== 'starnet') selectProviderUI('starnet');
-    else if (pickedProvider === 'starnet') refreshStarnetGenesisStatus();
+    // No auto-pick: there is no managed hero to promote. A returning station whose saved
+    // provider is the legacy managed id still gets its balance refreshed below.
+    if (pickedProvider === 'starnet') refreshStarnetGenesisStatus();
     return linked || linkable;
   }
   async function refreshStarnetGenesisStatus() {

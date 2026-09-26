@@ -824,29 +824,12 @@ const ModelDock = (() => {
     if (open) closeDock(); else openDock();
   }
 
-  // The model picker's account door always leads to StarNet. It does not change the
-  // active provider, promise a working model, or start a subscription transaction.
-  function openSubscription(event) {
-    const invoke = (typeof window !== 'undefined' && window.__TAURI__ && window.__TAURI__.core)
-      ? window.__TAURI__.core.invoke : null;
-    if (!invoke) return; // Browser: the anchor's normal target=_blank navigation owns this.
-    event.preventDefault();
-    closeDock();
-    Promise.resolve().then(() => invoke('open_external_url', { url: 'https://www.starnetos.com/pricing' }))
-      .catch(() => {
-        if (typeof StationUI !== 'undefined' && StationUI.notify) {
-          StationUI.notify('Could not open your browser. Visit www.starnetos.com/pricing for your StarNet subscription.', 'warn');
-        }
-      });
-  }
-
   function wire() {
     if (wired) return;
     wired = true;
     const toggle = el('model-dock-toggle');
     const search = el('model-dock-search');
     const refresh = el('model-dock-refresh');
-    const subscription = el('model-dock-subscription');
     if (toggle) {
       // this handler stops propagation (the outside-click closer below must not see its own opening
       // press), which also means audio.js's delegated click cue never reaches the document — so the
@@ -864,7 +847,6 @@ const ModelDock = (() => {
     }
     if (search) search.addEventListener('input', renderList);
     if (refresh) refresh.addEventListener('click', () => fetchModels(true));
-    if (subscription) subscription.addEventListener('click', openSubscription);
     document.addEventListener('click', ev => {
       const dock = el('model-dock'), button = el('model-dock-toggle');
       if (!open || !dock || !button) return;

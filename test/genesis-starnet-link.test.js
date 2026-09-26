@@ -1,8 +1,9 @@
 'use strict';
-// genesis-starnet-link.test.js — source guard for the STARNET MANAGED path on the first-run connect screen.
-// The subscription flow must be reachable at genesis (buy on the site → link in one confirmed code — no API
-// key anywhere), and it must stay HONEST: the chip is hidden until the sidecar reports a real cloud seam,
-// and WAKE refuses an unlinked pick instead of admitting a run the credits gate would bounce.
+// genesis-starnet-link.test.js — source guard for the managed-credits path after link-offer removal.
+// This product offers NO account linking: no hero chip, no link block, no ADD CREDITS / switch buttons,
+// no STORE link card. The sidecar pairing engine and the WAKE/balance guards stay for already-linked
+// stations, and they must stay HONEST: WAKE refuses unlinked/empty picks with a named remedy, polls are
+// single-flight, and an unknown balance never becomes a false denial.
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -16,19 +17,21 @@ const link = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'credits-link
 let n = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); n++; };
 
-// STARNET is THE HERO (the promoted easiest start) and ships HIDDEN — only the live probe reveals it.
-ok(/class="prov prov-hero hidden" data-prov="starnet"/.test(index), 'the STARNET hero ships hidden (honesty: no cloud, no offer)');
-ok(/data-prov="starnet"[\s\S]{0,600}Subscribe and start\. No API keys\./.test(index), 'the STARNET hero clearly explains the simple subscription path');
+// There is NO managed hero and NO link block: this product offers no account linking,
+// so first-run offers BYOK / OAuth sign-in / local model only. (The backend pairing engine
+// stays for already-linked stations; nothing here may invite a new link.)
+ok(!/data-prov="starnet"/.test(index), 'no managed hero chip on the connect screen');
+ok(!/prov-hero/.test(index), 'no hero card chrome remains on the connect screen');
 // ChatGPT/Codex has no chip of its own anymore — its sign-in lives inside the OPENAI card.
 ok(!/data-prov="codex"/.test(index), 'no standalone codex chip — ChatGPT sign-in lives inside the OPENAI selection');
 ok(/pickedProvider === 'codex'\) pickedProvider = 'openai'/.test(app), 'a returning codex agent lands on the OPENAI card');
 ok(/codexConnected\) \{[\s\S]{0,400}setProv\('codex'\)/.test(app) || /codexConnected[\s\S]{0,300}setProv\('codex'\)/.test(app),
   'WAKE on the OPENAI card rides the codex path when the ChatGPT sign-in is live and no key was typed');
-// The revealed hero becomes the default pick on a fresh create — never over a real user click.
-ok(/autoPick && \(linked \|\| linkable\) && !userPickedProvider/.test(app), 'the hero auto-pick yields to any real user pick');
-ok(/id="starnet-block"/.test(index), 'the genesis link block exists');
-ok(/id="btn-starnet-link"/.test(index) && /id="starnet-code"/.test(index) && /id="btn-starnet-open"/.test(index),
-  'the link block carries its button, code display, and open-page control');
+// No hero is ever auto-picked: there is nothing to promote.
+ok(!/selectProviderUI\('starnet'\)/.test(app), 'no code path auto-selects the legacy managed provider');
+ok(!/id="starnet-block"/.test(index), 'the genesis link block is gone');
+ok(!/id="btn-starnet-link"/.test(index) && !/id="starnet-code"/.test(index) && !/id="btn-starnet-open"/.test(index),
+  'the link block takes its button, code display, and open-page control with it');
 
 // The reveal is keyed on the sidecar seam, not hardcoded on.
 ok(/async function revealStarnetGenesis\(/.test(app), 'genesis probes the cloud seam before offering the chip');
@@ -51,9 +54,9 @@ ok(/stopStarnetLinkPoll\(\)/.test(app), 'the pairing poll has a stop, wired on s
 
 // EMPTY WALLET IS SAID HERE (2026-08-22: a first-timer signed in without buying credits; WAKE's real call was
 // refused by managed admission and the screen said "your model didn't answer", so they kept switching models).
-ok(/id="btn-starnet-credits"/.test(index), 'the STARNET block offers ADD CREDITS');
-ok(/id="btn-starnet-switch"/.test(index) && /USE A DIFFERENT ACCOUNT/.test(index),
-  'the genesis screen lets a paid beginner escape an automatically linked wrong account');
+ok(!/id="btn-starnet-credits"/.test(index), 'no ADD CREDITS button on the connect screen');
+ok(!/id="btn-starnet-switch"/.test(index) && !/USE A DIFFERENT ACCOUNT/.test(index),
+  'no switch-account escape hatch on the connect screen');
 ok(/async function switchStarnetAccount\(\)[\s\S]{0,1400}harness_clear_credits_token[\s\S]{0,800}\/api\/credits\/unlink[\s\S]{0,800}startStarnetLink\(\)/.test(app),
   'switch account clears keychain + sidecar link and immediately starts the normal pairing flow');
 ok(/function starnetOutOfCredit\(\)/.test(app), 'a linked-but-empty wallet is a named state');
@@ -92,10 +95,10 @@ ok(/function publishCreditsConfigured\(configured\)[\s\S]{0,300}setDesktopConfig
 ok(/if \(j && j\.configured\) \{[\s\S]{0,100}publishCreditsConfigured\(true\)/.test(stationui)
   && /if \(!\(j && j\.unavailable\)\) publishCreditsConfigured\(false\)/.test(stationui),
   'linked and definitive-unlinked answers converge the COMMS cache while temporary outages preserve it');
-ok((stationui.match(/\.then\(\(\) => refreshCreditsProvider\(\)\)\s*\.then\(\(\) => \{ (?:_creditsUnlinkPending = false; )?scheduleSettingsRepaint\(\); wireCredits\(body\); \}\)/g) || []).length === 2,
-  'link and unlink repaint the provider card after the Store and COMMS truth converges');
-ok(/_creditsLinkPollBusy/.test(stationui) && /generation !== _creditsLinkGeneration/.test(stationui),
-  'the STORE pairing flow is also single-flight and ignores stale link responses');
+ok((stationui.match(/\.then\(\(\) => refreshCreditsProvider\(\)\)\s*\.then\(\(\) => \{ (?:_creditsUnlinkPending = false; )?scheduleSettingsRepaint\(\); wireCredits\(body\); \}\)/g) || []).length === 1,
+  'unlink repaints after the Store and COMMS truth converges (the link flow is gone, so only unlink repaints)');
+ok(!/_creditsLinkPollBusy/.test(stationui) && !/renderCreditsLinkCard/.test(stationui),
+  'the STORE carries no pairing flow to go stale (single-flight pairing lives only in the kept genesis poll guards)');
 ok(/managed credit\|Managed credits/.test(app), 'a billing refusal from the wire preflight is named as billing, not as "model didn’t answer"');
 // the preflight reads Harness.chat's refusal string — otherwise every up-front refusal collapses to
 // "the provider returned an error" and the real reason never reaches the screen.
@@ -112,9 +115,9 @@ ok(/const revoked = !CREDITS_URL[\s\S]{0,240}snap\.authStatus === 'invalid'/.tes
   'remote revocation re-opens the normal LINK STATION flow without a manual local unlink');
 ok(/previous link was removed from your account/.test(app),
   'genesis names the removed link and tells the Commander to reconnect credits');
-ok(/lk\.reason === 'link_revoked'[\s\S]{0,220}previous link was removed from your account/.test(stationui),
-  'Settings renders the same relink recovery from backend truth');
-ok(/LINK SAVED · SERVICE UNAVAILABLE/.test(stationui) && /link saved on this station, but StarNet could not verify it/.test(app),
+ok(/previous link was removed from your account/.test(app),
+  'genesis names the removed link for legacy linked stations');
+ok(/link saved on this station, but StarNet could not verify it/.test(app),
   'temporary cloud failure is presented separately and never overclaimed as LINKED');
 
 console.log('genesis-starnet-link.test.js OK -', n, 'assertions');

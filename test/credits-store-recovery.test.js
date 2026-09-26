@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const ArmConfirm = require('../frontend/app/armconfirm.js');
 const source = fs.readFileSync(require.resolve('../frontend/app/stationui.js'), 'utf8');
-const start = source.indexOf('  let _creditsLinkPoll =');
+const start = source.indexOf('  let _creditsStoreGeneration =');
 const end = source.indexOf('  // BUDGET panel', start);
 assert.ok(start >= 0 && end > start);
 
@@ -67,7 +67,7 @@ function fixture({ native, get, post } = {}) {
   const dropped = fixture({ post: async () => { throw new Error('network'); } });
   await dropped.read(); await dropped.unlink(); assert.match(dropped.host.innerHTML, /Could not confirm/);
 
-  for (const failureAt of ['status', 'linkable', 'malformed']) {
+  for (const failureAt of ['status', 'malformed']) {
     let failed = true;
     const f = fixture({ get: async route => {
       if (route === '/api/credits') {
@@ -75,13 +75,14 @@ function fixture({ native, get, post } = {}) {
         if (failed && failureAt === 'malformed') return {};
         throw new Error('http 404');
       }
-      if (failed && failureAt === 'linkable') throw new Error('network');
       return { available: true, cloud: true };
     } });
     await f.read(); assert.match(f.host.innerHTML, /Could not check your account connection/);
     assert.ok(f.host.querySelector('#credits-retry'));
     failed = false; f.host.querySelector('#credits-retry').click(); await flush();
-    assert.ok(f.host.querySelector('#credits-link'), 'retry restores linking after ' + failureAt + ' failure');
+    assert.ok(!f.host.querySelector('#credits-link'), 'retry recovers without offering a link after ' + failureAt + ' failure');
+    assert.ok(!/Could not check your account connection/.test(f.host.innerHTML), 'retry clears the error after ' + failureAt + ' failure');
+    assert.ok(!f.calls.includes('/api/credits/linkable'), 'no linkability probe runs for an unlinked station');
   }
 
   let resolveOld; let statusReads = 0;
@@ -89,7 +90,7 @@ function fixture({ native, get, post } = {}) {
     ? (++statusReads === 1 ? new Promise(r => { resolveOld = r; }) : { configured: false })
     : { available: true, cloud: true } });
   const old = race.read(); await flush(); await race.read(); resolveOld(linked); await old;
-  assert.ok(race.host.querySelector('#credits-link'), 'late old-account read cannot hide new linking controls');
+  assert.ok(!race.host.querySelector('#credits-link'), 'late old-account read leaves no link offer');
 
   let resolveNative; let unlinked = false;
   const success = fixture({ native: () => new Promise(r => { resolveNative = r; }),
@@ -98,7 +99,7 @@ function fixture({ native, get, post } = {}) {
   });
   await success.read(); await success.unlink(); assert.match(success.host.innerHTML, /Unlinking this station/);
   await success.read(); assert.match(success.host.innerHTML, /Unlinking this station/, 'repaint preserves pending status');
-  resolveNative(); await flush(); assert.ok(success.host.querySelector('#credits-link'));
+  resolveNative(); await flush(); assert.ok(!success.host.querySelector('#credits-link'), 'after unlink no link offer returns');
   assert.ok(success.calls.includes('refresh') && success.calls.includes('provider'));
 
   const byok = fixture({ get: async route => route === '/api/credits' ? { configured: false } : { available: false, cloud: false } });

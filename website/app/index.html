@@ -186,21 +186,9 @@
                  .prov[data-prov] button + #prov-more stay in the DOM so app.js wiring (selectProviderUI,
                  setProviderRowExpanded) is untouched — the queries match .prov descendants regardless of nesting. -->
             <div class="provider-row ov-prov">
-              <!-- THE HERO IS THE STARNET SUBSCRIPTION — the promoted easiest start. It ships HIDDEN and is
-                   revealed only when the sidecar reports a real cloud seam (/api/credits linkable or configured):
-                   the honesty law says a build with no cloud must not offer a subscription it cannot link
-                   (app.js revealStarnetGenesis, which also makes it the default pick on a fresh create).
-                   ChatGPT sign-in is no longer a hero — it lives inside the OPENAI chip below. -->
-              <button class="prov prov-hero hidden" data-prov="starnet" aria-pressed="false">
-                <span class="prov-hero-row">
-                  <span class="prov-hero-body">
-                    <span class="prov-hero-title"><span class="prov-hero-prefix">START WITH</span><span class="prov-hero-name">STARNET</span></span>
-                    <span class="prov-hero-sub">Subscribe and start. No API keys.</span>
-                  </span>
-                  <span class="prov-hero-arrow" aria-hidden="true">→</span>
-                </span>
-              </button>
-              <div class="prov-byok-lab">Or bring your own provider</div>
+              <!-- No managed-subscription hero: this product offers no account linking, so the
+                   first-run funnel is BYOK / OAuth sign-in / local model only. -->
+              <div class="prov-byok-lab">Bring your own provider</div>
               <div class="prov-grid">
                 <!-- ChatGPT/Codex has NO chip of its own anymore: picking OPENAI offers BOTH paths on one card —
                      sign in with ChatGPT (device-code, no key) or paste an OpenAI API key. WAKE takes whichever
@@ -257,23 +245,7 @@
               </div>
             </div>
 
-            <!-- STARNET MANAGED link block — the subscription twin of #codex-block, reusing its classes so the
-                 two paths look and behave identically. LINK mints a pairing code (sidecar /api/credits/link/start),
-                 opens the browser to confirm it, and polls until the account is linked — no key, no token in the
-                 WebView, ever. Payment always stays in the external browser. -->
-            <div id="starnet-block" class="hidden">
-              <div class="codex-signin">
-                <div id="starnet-status" class="codex-status">checking…</div>
-                <div id="starnet-code" class="codex-code hidden"></div>
-                <div class="codex-actions">
-                  <button type="button" id="btn-starnet-link" class="btn">CONNECT STARNET ACCOUNT ↗</button>
-                  <button type="button" id="btn-starnet-open" class="btn hidden">↗ OPEN PAGE</button>
-                  <button type="button" id="btn-starnet-credits" class="btn hidden">＄ ADD CREDITS ▸</button>
-                  <button type="button" id="btn-starnet-switch" class="btn hidden">↻ USE A DIFFERENT ACCOUNT</button>
-                </div>
-                <div class="dim hint" id="starnet-hint">Runs on your StarNet subscription — no API key to find or paste. You’ll confirm a short code in your browser; StarNet never handles your payment details in the app.</div>
-              </div>
-            </div>
+            <!-- No managed-account link block: this product offers no subscription linking. -->
 
             <!-- OLLAMA free-local block — the keyless twin of the sign-in blocks (same classes, same rhythm).
                  #ollama-status is a PROJECTION of the sidecar's model catalog for 127.0.0.1:11434 (app.js loadModels):
@@ -656,11 +628,10 @@
         <div id="model-dock-list" class="model-dock-list scrolly" role="listbox" aria-label="Available models"></div>
         <div class="model-dock-foot">
           <button id="model-dock-refresh" type="button">REFRESH</button>
-          <a id="model-dock-subscription" href="https://www.starnetos.com/pricing" target="_blank" rel="noopener noreferrer" aria-label="StarNet subscription (opens in your browser)"><span>STARNET SUBSCRIPTION</span><span aria-hidden="true">↗</span></a>
         </div>
       </div>
       <button id="voice-toggle" class="voice-toggle" title="agent voice" aria-label="Agent voice" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.2 6.1h2.1L7.7 3.3v9.4L4.3 9.9H2.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="miter"/><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10.3 6a3.2 3.2 0 0 1 0 4"/><path d="M12.4 4a6.2 6.2 0 0 1 0 8"/></g></svg></button>
-      <button id="voice-live" class="voice-toggle voice-live" title="Local Live hands-free voice — local speech with your active Starnet agent" aria-label="Start Local Live hands-free voice" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="5.8" stroke-width="1.2"/><path d="M5.1 8h1.2m1.1-2.4v4.8M9.7 7v2m1.6-3.1v4.2" stroke-width="1.35" stroke-linecap="square"/></svg></button>
+      <button id="voice-live" class="voice-toggle voice-live" title="Local Live hands-free voice — local speech with your active agent" aria-label="Start Local Live hands-free voice" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="5.8" stroke-width="1.2"/><path d="M5.1 8h1.2m1.1-2.4v4.8M9.7 7v2m1.6-3.1v4.2" stroke-width="1.35" stroke-linecap="square"/></svg></button>
       <button id="chat-mic" class="mic-btn" title="click to talk" aria-label="Click to talk" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.8" y="1.7" width="4.4" height="7.2" rx="2.2"/><path d="M3.7 7.5a4.3 4.3 0 0 0 8.6 0"/><path d="M8 11.8v2.4"/><path d="M5.4 14.2h5.2"/></svg></button>
       </div>
     </div>
