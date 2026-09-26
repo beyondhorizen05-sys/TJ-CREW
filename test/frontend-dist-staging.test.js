@@ -90,7 +90,7 @@ const rd = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
   A.ok(/stage-frontend-dist\.mjs && tauri dev$/.test(pkg.scripts['desktop:dev']), 'desktop:dev stages the frontend before tauri dev (frontendDist is the staged copy)');
   for (const wf of ['.github/workflows/release-train.yml', '.github/workflows/desktop-build.yml']) {
     const y = rd(wf);
-    A.ok(/stage-voice-deps\.mjs --target \$\{\{ matrix\.target \}\}\n\s+node scripts\/stage-frontend-dist\.mjs\n/.test(y), wf + ' stages the frontend right after the voice deps, before the build step');
+    A.ok(/stage-voice-deps\.mjs --target \$\{\{ matrix\.target \}\}\r?\n\s+node scripts\/stage-frontend-dist\.mjs\r?\n/.test(y), wf + ' stages the frontend right after the voice deps, before the build step');
   }
   const tauri = JSON.parse(rd('src-tauri/tauri.conf.json'));
   A.eq(tauri.build.frontendDist, 'frontend-embed', 'tauri embeds code without a second media copy');
