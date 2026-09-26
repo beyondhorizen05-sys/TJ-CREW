@@ -601,7 +601,7 @@
     const abs = P.isAbsolute(raw) || /^[A-Za-z]:[\\/]/.test(raw) ? P.resolve(raw) : P.resolve(current, raw);
     if (!withinJail(P, abs, jailRoot) && !allowExternal) throw new Error('cwd must stay inside your workspace');
     if (!allowProtected && !withinJail(P, abs, jailRoot) && root && pathInside(P, abs, root))
-      throw new Error('cwd cannot point at another agent or protected StarNet workspace sibling');
+      throw new Error('cwd cannot point at another agent or protected TJ Crew Station workspace sibling');
     if (fs && fs.existsSync && !fs.existsSync(abs)) throw new Error('cwd does not exist: ' + raw);
     if (fs && fs.statSync) {
       try { if (!fs.statSync(abs).isDirectory()) throw new Error('cwd is not a directory: ' + raw); }
@@ -797,7 +797,7 @@
           ? environment.workspaceRoot(aid) : cwd;
         const shellDialect = environment && environmentBackendId !== 'local' ? 'posix' : (isWin ? 'cmd' : 'posix');
         const safetyDeny = remoteOwner ? null : commandSafetyRisk(cmd, { cwd: hostCwd, fs: fs, pathMod: P, dialect: shellDialect, isWin });
-        if (safetyDeny) throw new Error('refused [' + safetyDeny.kind + ']: this command ' + safetyDeny.reason + '. StarNet task processes preserve the user\'s control of their computer; use browser.test_* for local UI/game verification.');
+        if (safetyDeny) throw new Error('refused [' + safetyDeny.kind + ']: this command ' + safetyDeny.reason + '. TJ Crew Station task processes preserve the user\'s control of their computer; use browser.test_* for local UI/game verification.');
         if (!environment) { try { fs.mkdirSync(cwd, { recursive: true }); } catch (_) {} }
         const checkpoint = typeof ctx.checkpointMutation === 'function'
           ? Promise.resolve().then(function () { return ctx.checkpointMutation(hostCwd, 'shell.exec', { always: true }); }).catch(function () { return null; })
