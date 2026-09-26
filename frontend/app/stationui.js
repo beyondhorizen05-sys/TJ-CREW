@@ -63,6 +63,23 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   const sfx = n => { try { if (typeof SFX === 'object' && SFX[n]) SFX[n](); } catch (_) {} };
 
   const KEY = 'starnet.station.v1';
+  // The Custom endpoint catalog is user-owned connection state, not a static vendor roster. Keep only
+  // public model IDs locally so reopening Settings preserves the dropdown without ever retaining a key.
+  const CUSTOM_MODEL_CACHE_KEY = 'tjcrew.custom-model-catalog.v1';
+  function customModelsFor(baseUrl) {
+    try {
+      const all = JSON.parse(sessionStorage.getItem(CUSTOM_MODEL_CACHE_KEY) || '{}');
+      const list = all && all[String(baseUrl || '').trim()];
+      return Array.isArray(list) ? list.map(x => String(x || '').trim()).filter(Boolean) : [];
+    } catch (_) { return []; }
+  }
+  function rememberCustomModels(baseUrl, models) {
+    try {
+      const all = JSON.parse(sessionStorage.getItem(CUSTOM_MODEL_CACHE_KEY) || '{}') || {};
+      all[String(baseUrl || '').trim()] = Array.from(new Set((models || []).map(x => String(x || '').trim()).filter(Boolean))).slice(0, 1000);
+      sessionStorage.setItem(CUSTOM_MODEL_CACHE_KEY, JSON.stringify(all));
+    } catch (_) {}
+  }
   const THEMES = [['amber', '#ffaa33'], ['green', '#3dff70'], ['blue', '#46c8ff'], ['purple', '#b46bff'], ['red', '#ff4136'], ['white', '#e8f0e8']];
 
   let present = [];          // agent objects currently on the station
@@ -116,14 +133,14 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   // applySettings(): zoom scales layout too, so every hard-px face (COMMS included) grows together —
   // a root font-size can't reach the ~800 px-sized declarations. world.js resize() reads the same
   // zoom back so the station canvas re-renders at true device resolution instead of upscaling soft.
-  const TEXT_SCALES = [[0, 'AUTO'], [90, 'COMPACT'], [100, 'STANDARD'], [115, 'LARGE'], [130, 'X-LARGE'], [145, 'HUGE']];
+  const TEXT_SCALES = [[0, 'AUTO'], [80, 'TIGHT'], [90, 'COMPACT'], [100, 'STANDARD'], [115, 'LARGE'], [130, 'X-LARGE'], [145, 'HUGE']];
   // AUTO: smaller physical screens read at a gently larger face out of the box. screen.width is CSS px
   // (already reflects OS display scaling), so a 13–15" laptop lands at 1280–1536 and a desktop monitor
   // at ≥1920. Long edge guards portrait/rotated displays. Honest: the chip shows the resolved %.
   function autoTextScale() {
     const scr = window.screen || {};
     const long = Math.max(Number(scr.width) || 0, Number(scr.height) || 0) || window.innerWidth || 1920;
-    return long <= 1470 ? 115 : long <= 1740 ? 110 : 100;
+    return long <= 1470 ? 100 : long <= 1740 ? 95 : 90;
   }
   function resolveTextScale(v) { const n = Number(v) || 0; return n === 0 ? autoTextScale() : clampN(n, 90, 150, 100); }
   // CRT LEVEL (value → chip label → the tooltip). Two positions, strongest first.
@@ -4394,6 +4411,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // `codexDead ? 'avail expired'` / `&& !codexDead`; it now flags a dead sign-in for ANY OAuth provider.
       const codexDead = isOAuthProvider(p.id) && oauthExpiredFor(p.id);
       const h = H();
+      const customBaseUrl = (h && h.getBaseUrl && h.getBaseUrl('custom')) || '';
+      const customSelectedModel = (active === 'custom' && h && h.getModel && h.getModel()) || '';
+      const customModels = p.id === 'custom' ? customModelsFor(customBaseUrl) : [];
+      if (customSelectedModel && customModels.indexOf(customSelectedModel) < 0) customModels.unshift(customSelectedModel);
+      const customModelOptions = '<option value="">Select a fetched model…</option>' + customModels.map(id => '<option value="' + esc(id) + '"' + (id === customSelectedModel ? ' selected' : '') + '>' + esc(id) + '</option>').join('');
       const credentialSaved = isOAuthProvider(p.id) ? (ks.length > 0 && !codexDead) : !!(h && h.hasStoredCredential && h.hasStoredCredential(p.id));
       const endpointConfigured = p.id === 'ollama' || (p.id === 'custom' && !!(h && h.getBaseUrl && h.getBaseUrl(p.id)));
       const configured = credentialSaved || endpointConfigured;
@@ -4412,12 +4434,14 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         : health && health.reachable ? '● LOCAL ENDPOINT CONFIGURED · REACHABLE' : '○ LOCAL ENDPOINT CONFIGURED · OFFLINE';
       const keyStat = health === undefined ? connLabel + ' · CHECKING…'
         : health && health.credentialVerified ? connLabel + ' · VERIFIED' : health && health.reachable ? connLabel + ' · NOT VERIFIED' : connLabel + ' · CHECK FAILED';
-      const stat = !p.live ? '○ COMING SOON' : codexDead ? '⚠ SIGN-IN EXPIRED — RECONNECT'
-        : keyless ? localStat : credentialSaved ? keyStat : (isOAuthProvider(p.id) ? '○ NOT SIGNED IN' : (p.id === 'custom' ? '○ NO ENDPOINT' : '○ NO KEY'));
+      const stat = !p.live ? 'COMING SOON' : codexDead ? 'SIGN-IN EXPIRED — RECONNECT'
+        : p.id === 'custom' && !endpointConfigured ? (credentialSaved ? 'KEY SAVED — ADD BASE URL + MODEL' : 'ADD BASE URL + MODEL')
+        : keyless ? localStat : credentialSaved ? keyStat : (isOAuthProvider(p.id) ? 'NOT SIGNED IN' : (p.id === 'custom' ? 'NO ENDPOINT' : 'NO KEY'));
       const n = ks.length;
       // NO-KEY cards that accept a key get an inline, collapsible paste-and-save row so the user never has to hunt
       // for where keys live. It reuses the SAME save path (Harness.setKey) as the key list below — no duplicate logic.
-      const wantsInline = p.live && !credentialSaved && providerAcceptsKey(p.id);
+      // Custom always keeps its endpoint editor reachable: a saved key alone is not a usable Custom connection.
+      const wantsInline = p.live && providerAcceptsKey(p.id) && (p.id === 'custom' || !credentialSaved);
       // A never-signed-in device-code provider (codex/grok/kimi) gets its FIRST sign-in right on the card.
       // Codex is NOT exempt: its connect-screen block only exists on the overseer/brain screen, so after a
       // ✕ DISCONNECT (or on a machine that never signed in there) this button is the ONLY reachable sign-in —
@@ -4433,12 +4457,17 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           '</span>' +
         '</button>' +
           '<span class="prov-stat"><span class="prov-stat-t">' + stat + (credentialSaved && !isOAuthProvider(p.id) ? '<i>' + n + (n === 1 ? ' key' : ' keys') + '</i>' : '') + '</span></span>' +
-        (wantsInline ? '<button class="bb sm prov-addkey" data-act="prov-add-toggle" data-provider="' + esc(p.id) + '" aria-label="Add a ' + esc(p.name) + ' key" title="paste a ' + esc(p.name) + ' key without leaving this card">＋ ADD KEY</button>' : '') +
+        (wantsInline ? '<button class="bb sm prov-addkey" data-act="prov-add-toggle" data-provider="' + esc(p.id) + '" aria-label="Configure ' + esc(p.name) + '" title="set the endpoint, model ID, and optional API key">' + (p.id === 'custom' ? 'CONFIGURE' : 'ADD KEY') + '</button>' : '') +
         (wantsOAuthSignin ? '<button class="bb sm prov-addkey" data-act="prov-oauth-signin" data-provider="' + esc(p.id) + '" aria-label="Sign in to ' + esc(p.name) + '" title="device-code sign-in — no API key needed">⏼ SIGN IN</button>' : '') +
         (wantsInline
           ? '<div class="key-edit prov-key-edit" id="prov-key-edit-' + esc(p.id) + '" hidden>' +
+            (p.id === 'custom'
+              ? '<input type="url" class="key-input base-input" id="prov-base-in-custom" value="' + esc(customBaseUrl) + '" placeholder="Base URL, e.g. http://127.0.0.1:31415/v1" autocomplete="url" spellcheck="false">' +
+                '<select class="key-input" id="prov-model-in-custom" aria-label="Custom provider model">' + customModelOptions + '</select>'
+              : '') +
             '<input type="password" class="key-input" id="prov-key-in-' + esc(p.id) + '" placeholder="paste ' + esc(p.name) + ' key…" autocomplete="off" spellcheck="false">' +
-            '<button class="bb sm" data-act="prov-add-save" data-provider="' + esc(p.id) + '">SAVE</button>' +
+            (p.id === 'custom' ? '<button class="bb sm" data-act="prov-custom-fetch" data-provider="custom" title="Save this endpoint and key, then load the live /models catalog">FETCH MODELS</button>' : '') +
+            '<button class="bb sm" data-act="prov-add-save" data-provider="' + esc(p.id) + '">' + (p.id === 'custom' ? 'SAVE ENDPOINT' : 'SAVE') + '</button>' +
             '</div>'
           : '') +
         (wantsOAuthSignin
@@ -4817,9 +4846,106 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
 
   /* ============== SETTINGS — connections + real CRT / theme / audio toggles ============== */
   function wireProviderActions(body) {
+    // Custom endpoints expose the standard OpenAI-compatible GET /models route.  Save the non-secret
+    // endpoint and optional key first, then ask the local sidecar for that live catalog so a user never
+    // has to hand-type a model ID just to start a connection.
+    const fetchCustomModels = () => {
+      const h = H();
+      const baseInput = body.querySelector('#prov-base-in-custom');
+      const modelInput = body.querySelector('#prov-model-in-custom');
+      const keyInput = body.querySelector('#prov-key-in-custom');
+      const rawBase = baseInput ? baseInput.value.trim() : '';
+      const key = keyInput ? keyInput.value.trim() : '';
+      if (!rawBase) {
+        sfx('bad'); if (baseInput) baseInput.focus();
+        notify('enter the Custom Base URL, then fetch its models', 'bad');
+        return;
+      }
+      let baseUrl = rawBase;
+      if (!/^https?:\/\//i.test(baseUrl)) baseUrl = 'https://' + baseUrl.replace(/^\/+/, '');
+      try { new URL(baseUrl); } catch (_) {
+        sfx('bad'); if (baseInput) baseInput.focus(); notify('enter a valid Base URL', 'bad'); return;
+      }
+      if (!h || !h.setBaseUrl || !h.setProv) { sfx('bad'); return; }
+      if (baseInput) baseInput.value = baseUrl;
+      notify('fetching models from the custom endpoint…', 'good');
+      Promise.resolve(h.setBaseUrl(baseUrl, 'custom')).then(() => {
+        h.setProv('custom');
+        // Keep the submitted connection tuple available to the chat picker immediately. This is
+        // essential in the browser build: its Custom key lives in scoped storage, so catalog refreshes
+        // need it after this initial request. The lookup below still sends it only over loopback and
+        // the sidecar neither echoes nor persists the candidate on its own.
+        return key && h.setKey ? Promise.resolve(h.setKey(key, 'custom')) : null;
+      }).then(() => {
+        // Browser BYOK keys never appear in a URL. The sidecar receives this candidate only for the
+        // authenticated OpenAI-compatible /models lookup.
+        return fetch('/api/models/lookup', {
+          method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provider: 'custom', baseUrl, key })
+        });
+      })
+        .then(r => r.ok ? r.json() : r.json().catch(() => ({})).then(j => Promise.reject(new Error((j && j.error) || ('HTTP ' + r.status)))))
+        .then(j => {
+          const models = Array.isArray(j && j.models) ? j.models : [];
+          const ids = models.map(m => String((m && m.id) || m || '').trim()).filter(Boolean);
+          if (!ids.length) throw new Error('the endpoint returned no models');
+          rememberCustomModels(baseUrl, ids);
+          if (modelInput) modelInput.innerHTML = '<option value="">Select a fetched model…</option>' + ids.map(id => '<option value="' + esc(id) + '">' + esc(id) + '</option>').join('');
+          if (modelInput && !modelInput.value.trim()) modelInput.value = ids[0];
+          invalidateProviderHealth('custom');
+          if (typeof ModelDock !== 'undefined' && ModelDock.catalog) ModelDock.catalog({ force: true, ensure: { id: (modelInput && modelInput.value) || ids[0], provider: 'custom' } }).catch(() => {});
+          notify('✓ fetched ' + ids.length + ' model' + (ids.length === 1 ? '' : 's') + ' — now available in Chat; choose one and SAVE ENDPOINT', 'good');
+          sfx('click');
+        }).catch(err => {
+          notify('✕ could not fetch models: ' + ((err && err.message) || 'check the Base URL and API key'), 'bad');
+          sfx('bad');
+        });
+    };
     // save a pasted key from a NO-KEY card's inline row, reusing the SAME store path as the key list (Harness.setKey).
     const saveInline = (provider) => {
       const h = H();
+      // A Custom provider is a complete connection tuple: endpoint + optional bearer key + exact model ID.
+      // Keeping these controls beside the API-key field prevents the old dead-end where a key could be saved
+      // but there was no first-run place to supply the URL or model it belongs to.
+      if (provider === 'custom') {
+        const baseInput = body.querySelector('#prov-base-in-custom');
+        const modelInput = body.querySelector('#prov-model-in-custom');
+        const keyInput = body.querySelector('#prov-key-in-custom');
+        const rawBase = baseInput ? baseInput.value.trim() : '';
+        const model = modelInput ? modelInput.value.trim() : '';
+        const key = keyInput ? keyInput.value.trim() : '';
+        if (!rawBase || !model) {
+          sfx('bad');
+          const missing = !rawBase ? baseInput : modelInput;
+          if (missing) missing.focus();
+          notify('enter both a Base URL and Model ID for the custom provider', 'bad');
+          return;
+        }
+        let baseUrl = rawBase;
+        if (!/^https?:\/\//i.test(baseUrl)) baseUrl = 'https://' + baseUrl.replace(/^\/+/, '');
+        try { new URL(baseUrl); } catch (_) {
+          sfx('bad'); if (baseInput) baseInput.focus(); notify('enter a valid Base URL', 'bad'); return;
+        }
+        if (!h || !h.setBaseUrl || !h.setProv || !h.setModel) { sfx('bad'); return; }
+        if (baseInput) baseInput.value = baseUrl;
+        // Store the non-secret URL and selected model first; key verification below then uses this exact endpoint.
+        Promise.resolve(h.setBaseUrl(baseUrl, 'custom')).then(() => {
+          h.setProv('custom');
+          h.setModel(model);
+          return key ? (h.validateAndSetKey ? h.validateAndSetKey(key, 'custom') : h.setKey(key, 'custom')) : null;
+        }).then(() => {
+          invalidateProviderHealth('custom');
+          notify('✓ saved custom endpoint and model' + (key ? ' — API key ' + keyStoreClause() : ' — no API key configured'), 'good');
+          if (typeof ModelDock !== 'undefined' && ModelDock.reconcile) ModelDock.reconcile().catch(() => ModelDock.reflect && ModelDock.reflect());
+          else if (typeof ModelDock !== 'undefined' && ModelDock.reflect) ModelDock.reflect();
+          if (typeof KeyCTA !== 'undefined' && KeyCTA.refresh) KeyCTA.refresh();
+          sfx('click'); rerender('settings');
+        }).catch(err => {
+          notify('✕ ' + ((err && err.message) || 'could not save the custom provider'), 'bad');
+          sfx('bad'); rerender('settings');
+        });
+        return;
+      }
       const inp = body.querySelector('#prov-key-in-' + provider);   // provider ids are simple slugs — safe to interpolate
       const v = inp ? inp.value.trim() : '';
       if (!v) { sfx('bad'); if (inp) inp.focus(); return; }
@@ -4920,6 +5046,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // clicks on the inline key controls must NOT bubble up to provider-select — they toggle/save the key row.
       const inlineToggle = card.querySelector('[data-act="prov-add-toggle"]');
       const inlineSave = card.querySelector('[data-act="prov-add-save"]');
+      const inlineFetch = card.querySelector('[data-act="prov-custom-fetch"]');
       const inlineEdit = card.querySelector('.prov-key-edit');
       const inlineInput = card.querySelector('.key-input');
       if (inlineToggle) inlineToggle.addEventListener('click', ev => {
@@ -4928,6 +5055,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         sfx('click');
       });
       if (inlineSave) inlineSave.addEventListener('click', ev => { ev.stopPropagation(); saveInline(card.dataset.provider); });
+      if (inlineFetch) inlineFetch.addEventListener('click', ev => { ev.stopPropagation(); fetchCustomModels(); });
       if (inlineInput) {
         inlineInput.addEventListener('click', ev => ev.stopPropagation());   // don't select the provider when focusing the field
         inlineInput.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); saveInline(card.dataset.provider); } });

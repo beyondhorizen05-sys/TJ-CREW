@@ -540,6 +540,8 @@
       credentialPool: true,
       supportsTools: null,
       supportsReasoning: null,
+      // Custom users can opt into reasoning; unsupported endpoints are retried without this field.
+      wireReasoningEffort: true,
       order: 70
     }
   ];

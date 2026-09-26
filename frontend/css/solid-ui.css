@@ -1,0 +1,83 @@
+/* Calm solid theme: retains the selected palette while removing the animated CRT/pixel-art treatment.
+   This file is loaded last so it can be a clear, reversible presentation layer rather than changing
+   interaction or station data code. */
+html { background: var(--bg); }
+body {
+  --solid-font: "Bahnschrift Condensed", Bahnschrift, "Arial Narrow", "Segoe UI", Arial, sans-serif;
+  font-family: var(--solid-font);
+  font-size: 14px;
+  line-height: 1.4;
+  text-shadow: none;
+  background: var(--bg);
+}
+
+/* Some legacy panels name the bundled pixel font directly. Override those declarations too: the
+   browser's normal UI font has complete glyph coverage and avoids the narrow, clipped terminal metrics. */
+body, body * { font-family: var(--solid-font) !important; font-stretch: condensed; }
+body :is(button, input, select, textarea) { line-height: 1.3; letter-spacing: -.1px; }
+/* The boot card uses the actual app mark instead of the placeholder diamond. */
+.boot-mark { display: flex; width: 100%; align-items: center; justify-content: center; font-size: 0; }
+.boot-mark::before { content: ""; width: 72px; height: 72px; display: block; background: url("../assets/brand/tjcrew-icon.png") center / contain no-repeat; filter: drop-shadow(0 1px 5px color-mix(in srgb, var(--ph-bright) 38%, transparent)); }
+.boot-mark::after { display: none; }
+
+/* The message pane is where the old 18px terminal type was most tiring. Keep it compact but readable. */
+#chat-panel .cmsg { font-size: 13px !important; line-height: 1.45; }
+/* SYSTEM and its following status text are separate inline elements; give the label a real gap. */
+#chat-panel .cmsg.system .who { margin-right: 7px; }
+
+/* The scanline, vignette, and flicker layers are the main sources of visual noise. */
+body::before,
+body::after { display: none; }
+body:not(.no-flicker) #app { animation: none; }
+
+/* Use one flat surface for the shell rather than simulated CRT glass and beveled hardware. */
+#topbar, #left, #right, #bottombar, #center,
+#screen-game #chat-panel, #screen-game #stage-wrap {
+  background: var(--panel2);
+  box-shadow: none;
+  border: 1px solid var(--ph-dim);
+  border-radius: var(--r);
+}
+#topbar::before, #left::before, #right::before, #bottombar::before, #center::before,
+#stage-wrap::before { display: none; }
+
+/* Keep the AI workspace visible, without the CSS sharpening/filter treatment. */
+#stage { opacity: 1; image-rendering: auto; filter: none; }
+.cam-hud { display: none; }
+
+/* Restore tab for a hidden right-side COMMS rail. */
+.comms-hide, .comms-show {
+  font: inherit; color: var(--ph); background: var(--panel2); border: 1px solid var(--ph-dim);
+  border-radius: 4px; cursor: pointer;
+}
+.comms-hide { padding: 2px 6px; }
+.comms-show {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 4;
+  writing-mode: vertical-rl; text-orientation: mixed; padding: 10px 3px;
+  border-right: 0; border-radius: 5px 0 0 5px;
+}
+.comms-show:hover, .comms-hide:hover { color: var(--ph-bright); border-color: var(--ph); }
+
+/* First-run art follows the same calm surface; onboarding remains fully usable. */
+#screen-splash,
+.sp-floor,
+.sp-grid { background: var(--bg); background-image: none; }
+
+/* Remove glow from common reading and control surfaces. */
+:is(button, input, select, textarea, .btn, .bb, .prov, .panel, .key-row, .prov-card) {
+  text-shadow: none;
+  box-shadow: none;
+}
+
+
+/* Context usage uses a glyph bar in the legacy theme; it becomes unreadable squares in a normal UI font. */
+#bottombar .ctx-gauge { gap: 5px; padding: 3px 8px; font-size: 11px; letter-spacing: .8px; box-shadow: none; }
+#bottombar .ctx-gauge .ctx-cells { display: none; }
+#bottombar .ctx-gauge .ctx-lbl { letter-spacing: 1px; }
+#bottombar .ctx-gauge .ctx-num { min-width: 0; }
+#bottombar .ctx-gauge .ctx-cap { display: none; }
+
+
+/* Keep the logo and connection status on the same physical centerline. */
+#screen-boot .boot-veil { display: flex; flex-direction: column; align-items: center; }
+#screen-boot .boot-mark { width: 72px; }

@@ -180,7 +180,7 @@
     const or = deps.openrouter || {};
     const apiKey = or.apiKey || deps.apiKey || '';
     const protocol = or.protocol || 'openrouter-chat';
-    const providerLabel = or.provider === 'starnet' ? 'StarNet' : (or.provider === 'openai' ? 'OpenAI' : 'OpenRouter');
+    const providerLabel = or.provider === 'starnet' ? 'StarNet' : (or.provider === 'openai' ? 'OpenAI' : (or.provider === 'custom' ? 'Custom media router' : 'OpenRouter'));
     const orBaseUrl = String(or.baseUrl || deps.baseUrl || '').trim().replace(/\/+$/, '');
     const orUrl = orBaseUrl ? orBaseUrl + '/chat/completions' : DEFAULT_OR_URL;
     const openAIImageUrl = orBaseUrl ? orBaseUrl + '/images/generations' : DEFAULT_OPENAI_IMAGE_URL;
@@ -189,8 +189,9 @@
     const doFetch = deps.fetchImpl || (typeof fetch !== 'undefined' ? fetch : null);
     if (!doFetch) throw new Error('image.js requires global fetch (Node 18+) or deps.fetchImpl');
     const configuredImageModel = String(deps.imageModel || '').trim();
+    const allowRouterSelectedImageModel = protocol === 'openai-images' && or.provider === 'custom';
     const IMAGE_MODEL  = protocol === 'openai-images'
-      ? (/^(?:gpt-image-|dall-e-)/i.test(configuredImageModel) ? configuredImageModel : OPENAI_IMAGE_MODEL)
+      ? ((allowRouterSelectedImageModel && configuredImageModel) || /^(?:gpt-image-|dall-e-)/i.test(configuredImageModel) ? configuredImageModel : OPENAI_IMAGE_MODEL)
       : (configuredImageModel || DEFAULT_IMAGE_MODEL);
     const VISION_MODEL = deps.visionModel || or.model || DEFAULT_VISION_MODEL;
     // Auxiliary vision route: a one-shot text answer from the RUN's own provider/model (injected by the run
@@ -281,7 +282,7 @@
         const prompt = String(args.prompt || '').trim();
         if (!prompt) throw new Error('prompt is required');
         const requestedModel = String(args.model || IMAGE_MODEL).trim();
-        let model = protocol === 'openai-images' && !/^(?:gpt-image-|dall-e-)/i.test(requestedModel)
+        let model = protocol === 'openai-images' && !(allowRouterSelectedImageModel || /^(?:gpt-image-|dall-e-)/i.test(requestedModel))
           ? IMAGE_MODEL : requestedModel;
         // Aspect ratio rides OpenRouter's image_config passthrough — prose in the prompt is
         // mostly ignored by the Gemini image models, so this field is the only real dial.

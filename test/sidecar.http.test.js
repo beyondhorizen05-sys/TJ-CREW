@@ -550,6 +550,10 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
       A.eq(liveProbe.body.reachable, true, 'reachable custom endpoint is proven by a real model-catalog round-trip');
       A.eq(liveProbe.body.catalogAvailable, true, 'reachable custom endpoint reports its real non-empty catalog');
       A.eq(liveProbe.body.credentialVerified, true, 'keyless custom endpoint needs no fabricated credential proof');
+      const lookup = await j('POST', '/api/models/lookup', { provider: 'custom', baseUrl: liveBase, key: 'probe-good-key' });
+      A.eq(lookup.status, 200, 'POST /api/models/lookup accepts an unsaved Custom credential for first-run discovery');
+      A.ok(Array.isArray(lookup.body.models) && lookup.body.models.some(m => m.id === 'local/proven-model'), 'the ephemeral Custom lookup returns the endpoint catalog');
+      A.ok(JSON.stringify(lookup.body).indexOf('probe-good-key') < 0, 'the model lookup never echoes its candidate key');
       const wrongCandidate = await j('POST', '/api/providers/validate', { provider: 'custom', baseUrl: liveBase, key: 'probe-wrong-key', model: 'local/proven-model' });
       A.eq(wrongCandidate.body.credentialVerified, false, 'candidate-key validation rejects a key that fails the inference wire');
       const goodCandidate = await j('POST', '/api/providers/validate', { provider: 'custom', baseUrl: liveBase, key: 'probe-good-key', model: 'local/proven-model' });

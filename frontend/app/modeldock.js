@@ -211,7 +211,7 @@ const ModelDock = (() => {
     // Preserve a saved current model only while the active catalog is unavailable. Once a successful catalog
     // says it is absent, reconcileCurrentModel() has either mapped it to a proven provider-native id or cleared
     // it. Re-inserting it here was the stale-model bug: a bare Anthropic id appeared selectable under STARNET.
-    if (current && isAgentModel({ id: current, provider: p }) && !list.some(m => m.id === current && normalizeProvider(m.provider) === p) && !(catalogState[p] && catalogState[p].confirmed)) {
+    if (current && isAgentModel({ id: current, provider: p }) && !list.some(m => m.id === current && normalizeProvider(m.provider) === p) && (p === 'custom' || !(catalogState[p] && catalogState[p].confirmed))) {
       list.unshift({ id: current, name: current, provider: p, fallback: true, unverifiedCurrent: true });
     }
     return list.filter(m => m && m.id && isAgentModel(m));
@@ -234,7 +234,8 @@ const ModelDock = (() => {
 
   function reconcileCurrentModel(p, list) {
     p = normalizeProvider(p);
-    if (!(catalogState[p] && catalogState[p].confirmed)) return;
+    // Custom endpoints may intentionally hide or omit /models. A user-supplied exact model ID remains valid until they change it.
+    if (p === 'custom' || !(catalogState[p] && catalogState[p].confirmed)) return;
     const current = getModel();
     if (!current || (Array.isArray(list) && list.some(m => m && m.id === current))) return;
     const next = catalogEquivalent(current, p, list);
@@ -324,7 +325,11 @@ const ModelDock = (() => {
   }
 
   function supportsReasoning(item) {
-    if (normalizeProvider((item && item.provider) || provider()) === 'codex') return true;
+    const p = normalizeProvider((item && item.provider) || provider());
+    if (p === 'codex') return true;
+    // Generic OpenAI-compatible endpoints do not always expose model metadata.
+    // Let users request a reasoning level; incompatible endpoints automatically retry without it.
+    if (p === 'custom' && (!item || item.supportsReasoning == null)) return true;
     if (item && item.supportsReasoning != null) return !!item.supportsReasoning;
     const params = item && (item.supported_parameters || item.supportedParameters);
     if (Array.isArray(params)) {
@@ -632,6 +637,26 @@ const ModelDock = (() => {
     }
     let group = '';
     const frag = document.createDocumentFragment();
+    // AUTO is a deliberate picker action, never a fake provider model id. It resolves to the first
+    // live model in the active provider's sorted catalog, so the chat request always receives an ID
+    // the endpoint actually advertised.
+    const autoCandidate = models.find(m => normalizeProvider(m.provider) === activeProvider && !m.fallback) ||
+      models.find(m => normalizeProvider(m.provider) === activeProvider) || list[0];
+    if (autoCandidate) {
+      const auto = document.createElement('button');
+      auto.type = 'button';
+      auto.className = 'model-dock-auto';
+      auto.title = 'Automatically use the first available ' + providerLabel(activeProvider) + ' model';
+      auto.setAttribute('role', 'option');
+      auto.setAttribute('aria-label', 'Auto: choose the first available model');
+      const autoName = document.createElement('span');
+      autoName.textContent = 'AUTO';
+      const autoDetail = document.createElement('span');
+      autoDetail.textContent = 'first available';
+      auto.append(autoName, autoDetail);
+      auto.addEventListener('click', () => applyModel(autoCandidate));
+      frag.appendChild(auto);
+    }
     for (const m of list) {
       const g = groupOf(m);
       if (g !== group) {
@@ -765,6 +790,8 @@ const ModelDock = (() => {
   }
 
   function showTip() {
+    // Commander preference: no hover/focus popups anywhere, including the bespoke model chip.
+    return;
     const tip = el('model-dock-tip');
     if (!tip || open) return;   // never show the hover tip while the dock itself is open
     updateTip(tip);

@@ -58,6 +58,12 @@
     if (providerId === 'openai' && runKey) {
       return { ok: true, provider: 'openai', protocol: 'openai-images', key: runKey, baseUrl: base(input.providerBaseUrl), keySource: 'run' };
     }
+    // OpenAI-compatible routers such as FreeLLMAPI expose the same Images API
+    // surface.  Their image catalog is separate from the text-chat catalog, so
+    // deliberately send `auto` and let the router choose a media-capable model.
+    if (providerId === 'custom' && runKey && base(input.providerBaseUrl)) {
+      return { ok: true, provider: 'custom', protocol: 'openai-images', key: runKey, baseUrl: base(input.providerBaseUrl), keySource: 'run', imageModel: 'auto' };
+    }
     if (managedKey && managedBaseUrl) {
       return { ok: true, provider: 'starnet', protocol: 'openrouter-chat', key: managedKey, baseUrl: managedBaseUrl, keySource: 'managed' };
     }
@@ -91,7 +97,7 @@
       return 'Image task blocked: ' + (managed ? 'the StarNet credits connection is unavailable for ' : 'no media connection is configured for ')
         + label(input.providerId, input.model) + '. Open SETTINGS and ' + (managed
           ? 'relink this station to your StarNet account'
-          : 'connect an OpenAI or OpenRouter API key for image generation, or link this station to your StarNet account')
+          : 'connect an OpenAI-compatible Custom, OpenAI, or OpenRouter API key for image generation, or link this station to your StarNet account')
         + ', then retry. No image artifact was produced.';
     }
     return null;

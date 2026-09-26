@@ -78,6 +78,35 @@
     if (!doc || !doc.body || init._wired) return;
     init._wired = true;
 
+    // Commander preference: hover/focus popups are disabled across the station. Strip both the
+    // native browser source (`title`) and the station source (`data-tip`) while preserving an
+    // accessible name for icon-only controls. A small observer covers panels rendered after boot.
+    const silence = root => {
+      if (!root) return;
+      const nodes = [];
+      if (root.nodeType === 1 && root.matches && root.matches('[title],[data-tip]')) nodes.push(root);
+      if (root.querySelectorAll) nodes.push(...root.querySelectorAll('[title],[data-tip]'));
+      for (const el of nodes) {
+        const title = String(el.getAttribute('title') || el.getAttribute('data-tip') || '').trim();
+        const named = (el.textContent || '').trim() || el.getAttribute('aria-label') || el.getAttribute('aria-labelledby');
+        if (title && !named) el.setAttribute('aria-label', title);
+        el.removeAttribute('title');
+        el.removeAttribute('data-tip');
+        el.removeAttribute('aria-describedby');
+      }
+    };
+    silence(doc.body);
+    try {
+      const observer = new MutationObserver(records => {
+        for (const record of records) {
+          if (record.type === 'attributes') silence(record.target);
+          else for (const node of record.addedNodes) silence(node);
+        }
+      });
+      observer.observe(doc.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['title', 'data-tip'] });
+    } catch (_) {}
+    return { hide: () => {} };
+
     const card = doc.createElement('div');
     card.className = 'station-tip';
     card.id = TIP_ID;

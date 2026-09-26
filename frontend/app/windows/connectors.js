@@ -1126,15 +1126,16 @@
     }
     function ccCard(e, ci) {
       const cardId = e.catalogId || e.id;
-      const chip = e.platformApi && e.unattendedSupported === false
+      const chip = e.externalSite ? ['▸', 'live site', 'var(--ok)'] : e.platformApi && e.unattendedSupported === false
         ? ['', 'manual setup', 'var(--gold)']
         : (e.signInAvailable === false ? ['', e.releaseDeferred ? 'deferred' : 'sign-in unavailable', 'var(--gold)'] : (CC_CHIP[e.authType] || CC_CHIP.none));
-      const origin = e.googleApi ? '<span class="cc-badge cc-official" title="TJ Crew Station connector using Google’s APIs">TJCREW · GOOGLE API</span>' : e.platformApi
+      const origin = e.externalSite ? '<span class="cc-badge cc-official" title="opens the platform’s live public site; TJ Crew is not connected to this account">live platform</span>' : e.googleApi ? '<span class="cc-badge cc-official" title="TJ Crew Station connector using Google’s APIs">TJCREW · GOOGLE API</span>' : e.platformApi
         ? '<span class="cc-badge cc-official" title="first-party REST API documented by the vendor">✓ official API</span>'
         : (e.official ? '<span class="cc-badge cc-official" title="first-party server, run by the vendor">✓ official</span>'
                       : '<span class="cc-badge cc-community" title="community-run server">community</span>');
       let action;
-      if (e.installed) action = '<button class="bb xs" data-cc-act="manage" data-id="' + esc(cardId) + '">MANAGE SERVICE</button>';
+      if (e.externalSite) action = '<a class="bb xs" href="' + esc(e.homepage) + '" target="_blank" rel="noopener">OPEN PLATFORM ↗</a>';
+      else if (e.installed) action = '<button class="bb xs" data-cc-act="manage" data-id="' + esc(cardId) + '">MANAGE SERVICE</button>';
       else if (e.platformApi) action = '<button class="bb xs" data-cc-act="platform" data-id="' + esc(cardId) + '">SET UP API KEY</button>';
       else if (e.googleApi && e.signInAvailable === false) action =
         '<button class="bb xs" disabled>' + (e.releaseDeferred ? 'DEFERRED' : 'GOOGLE SIGN-IN UNAVAILABLE') + '</button>';
@@ -1168,7 +1169,8 @@
           '<div class="mc-url dim"><code>' + esc(e.envVar) + '</code>' +
             (e.docsUrl ? ' · <a class="dim" href="' + esc(e.docsUrl) + '" target="_blank" rel="noopener">docs ↗</a>' : '') + '</div>'
         : '';
-      const setupHint = e.installed ? 'Setup saved — manage access or reconnect.'
+      const setupHint = e.externalSite ? 'Opens the live platform in your browser. Sign in and apply or manage your profile there.'
+        : e.installed ? 'Setup saved — manage access or reconnect.'
         : e.signInAvailable === false ? (e.signInMessage || 'Sign-in is unavailable in this build.')
         : e.platformApi ? (e.unattendedSupported === false ? 'Manual setup required. See the service instructions before adding a key.' : 'Requires an API key from your account. Guided setup opens the key form.')
         : e.authType === 'apikey' ? 'Requires an API key or token from your account.'

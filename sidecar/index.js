@@ -9424,6 +9424,9 @@ const ROUTES = [
   { m: 'GET', exact: '/api/providers', h: handleProviders },
   { m: 'POST', exact: '/api/providers/probe', h: handleProviderProbe },
   { m: 'POST', exact: '/api/providers/validate', h: handleProviderValidate },
+  // Custom catalog discovery may need a just-entered browser BYOK. The key is consumed only by this
+  // request (never logged, persisted, or returned), so a first model can be picked before saving.
+  { m: 'POST', exact: '/api/models/lookup', h: handleProviderModelsLookup },
   // /api/models/openrouter is served by this same prefix (id='openrouter'). handleProviderModels answers 200
   // with {models:[]} + error on any catalog failure, so it never throws into the central guard.
   { m: 'GET', qprefix: '/api/models/', h: handleProviderModels },
@@ -15685,7 +15688,7 @@ async function runOnceCore(o) {
       return out;
     } finally { clearTimeout(t); }
   };
-  const imageTools = makeImageTools({ openrouter: studioRoute.ok ? { apiKey: studioRoute.key, model, baseUrl: studioRoute.baseUrl, provider: studioRoute.provider, protocol: studioRoute.protocol } : null, fsp, pathMod: path, root: WORKSPACES, imageModel: String(ENV('IMAGE_MODEL') || '').trim() || undefined, auxVision: auxVisionCall, signal, onUsage: recordMediaUsage });
+  const imageTools = makeImageTools({ openrouter: studioRoute.ok ? { apiKey: studioRoute.key, model, baseUrl: studioRoute.baseUrl, provider: studioRoute.provider, protocol: studioRoute.protocol } : null, fsp, pathMod: path, root: WORKSPACES, imageModel: studioRoute.imageModel || String(ENV('IMAGE_MODEL') || '').trim() || undefined, auxVision: auxVisionCall, signal, onUsage: recordMediaUsage });
   // browser.vision uses the SAME vision model as image_analyze when a key exists; with no key it
   // reports "unavailable" honestly (never a success-shaped stub). Pass the dep only when usable.
   runBrowser = makeBrowserTools({
@@ -19847,6 +19850,28 @@ async function handleProviderModels(req, res) {
   if (!getProviderProfile(id)) return json(404, { models: [], error: 'unknown provider' });
   try {
     const models = await listModelsForProvider(id, { baseUrl });
+    json(200, { provider: id, models: models.map(publicModel) });
+  } catch (e) {
+    json(200, { provider: id, models: [], error: (e && e.message) || 'model catalog unavailable', code: (e && e.code) || '' });
+  }
+}
+
+// POST /api/models/lookup {provider, baseUrl, key?}
+// Browser BYOK credentials normally live only in the browser. Catalog lookup is the one first-run
+// operation that needs the candidate key before the user has chosen a model and saved the connection.
+// Keep this deliberately ephemeral: it is used solely to call the provider's /models endpoint.
+async function handleProviderModelsLookup(req, res) {
+  const json = (code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
+  let body;
+  try { body = JSON.parse(await readBody(req, 1 << 16)) || {}; }
+  catch (_) { return json(400, { models: [], error: 'bad json' }); }
+  const id = normalizeProvider(body.provider);
+  if (!getProviderProfile(id)) return json(404, { models: [], error: 'unknown provider' });
+  try {
+    const models = await listModelsForProvider(id, {
+      baseUrl: String(body.baseUrl || body.base_url || ''),
+      key: String(body.key || '')
+    });
     json(200, { provider: id, models: models.map(publicModel) });
   } catch (e) {
     json(200, { provider: id, models: [], error: (e && e.message) || 'model catalog unavailable', code: (e && e.code) || '' });

@@ -47,7 +47,7 @@
   const CATEGORY_ORDER = [
     'Docs & Knowledge', 'Search & Research', 'Compute & Data', 'Developer Tools',
     'Advanced / Developer', 'Automation', 'Social', 'Productivity', 'Design',
-    'Payments & Finance', 'CRM & Sales', 'Marketing'
+    'Payments & Finance', 'CRM & Sales', 'Marketing', 'Freelance & Jobs'
   ];
 
   /* staticOauth factory for Google rows — one authorization server (accounts.google.com), so the
@@ -369,19 +369,39 @@
     { id: 'ramp', name: 'Ramp', category: 'Payments & Finance', authType: 'oauth', transport: 'http',
       url: 'https://mcp.ramp.com/mcp', official: true, homepage: 'https://ramp.com',
       aliases: ['ramp', 'corporate cards', 'expenses', 'spend'],
-      blurb: 'Query Ramp transactions, cards, and spend programs. Needs Ramp sign-in (OAuth).' }
+      blurb: 'Query Ramp transactions, cards, and spend programs. Needs Ramp sign-in (OAuth).' },
+
+    // ── Freelance & Jobs — live platform shortcuts, deliberately not agent integrations ────────────────
+    // These sites do not offer one shared, user-authorized job-feed API. Each card opens the platform's
+    // real site; it never claims TJ Crew can browse, scrape, apply, or manage an account for you.
+    { id: 'upwork', name: 'Upwork', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.upwork.com/nx/search/jobs/', aliases: ['freelance jobs', 'contracts', 'up work'], blurb: 'Live freelance-job marketplace — open Upwork to search jobs or manage your profile.' },
+    { id: 'fiverr', name: 'Fiverr', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.fiverr.com/', aliases: ['freelance gigs', 'services marketplace'], blurb: 'Live services marketplace — open Fiverr to find work or manage your seller profile.' },
+    { id: 'freelancer', name: 'Freelancer.com', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.freelancer.com/jobs/', aliases: ['freelancer', 'freelance projects'], blurb: 'Live project marketplace for freelancers and clients.' },
+    { id: 'toptal', name: 'Toptal', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.toptal.com/talent/apply', aliases: ['elite freelance', 'remote talent'], blurb: 'Live talent network — open Toptal to apply or learn about its screening process.' },
+    { id: 'guru', name: 'Guru', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.guru.com/d/jobs/', aliases: ['guru freelance', 'freelance projects'], blurb: 'Live freelance marketplace for projects and services.' },
+    { id: 'peopleperhour', name: 'PeoplePerHour', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.peopleperhour.com/', aliases: ['people per hour', 'uk freelance'], blurb: 'Live freelance marketplace for hourly and fixed-price work.' },
+    { id: 'contra', name: 'Contra', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://contra.com/jobs', aliases: ['contra freelance', 'commission free'], blurb: 'Live independent-work platform for finding contracts and building a profile.' },
+    { id: 'workana', name: 'Workana', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.workana.com/jobs', aliases: ['workana freelance', 'latin america freelance'], blurb: 'Live freelance marketplace with remote projects across many categories.' },
+    { id: 'malt', name: 'Malt', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.malt.com/', aliases: ['malt freelance', 'europe freelance'], blurb: 'Live European freelance marketplace for independent consultants.' },
+    { id: '99designs', name: '99designs', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://99designs.com/designer-jobs', aliases: ['99 designs', 'design contests', 'designer jobs'], blurb: 'Live design-work marketplace for designers and creative briefs.' },
+    { id: 'glassdoor', name: 'Glassdoor', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.glassdoor.com/Job/index.htm', aliases: ['glass door', 'jobs', 'company reviews'], blurb: 'Live job listings, salary signals, and company reviews.' },
+    { id: 'indeed', name: 'Indeed', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.indeed.com/', aliases: ['indeed jobs', 'job search'], blurb: 'Live job-search platform for local, remote, contract, and full-time work.' },
+    { id: 'linkedin-jobs', name: 'LinkedIn Jobs', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://www.linkedin.com/jobs/', aliases: ['linkedin', 'professional jobs', 'networking jobs'], blurb: 'Live professional job listings and networking opportunities.' },
+    { id: 'wellfound', name: 'Wellfound', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://wellfound.com/jobs', aliases: ['angel list', 'startup jobs', 'wellfound jobs'], blurb: 'Live startup job board for remote and early-stage company roles.' },
+    { id: 'remote-ok', name: 'Remote OK', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://remoteok.com/', aliases: ['remote jobs', 'remote ok'], blurb: 'Live remote-job board spanning engineering, design, support, and operations.' },
+    { id: 'we-work-remotely', name: 'We Work Remotely', category: 'Freelance & Jobs', authType: 'oauth', transport: 'http', externalSite: true, official: true, homepage: 'https://weworkremotely.com/', aliases: ['wwr', 'remote work', 'remote jobs'], blurb: 'Live remote-job board for full-time, contract, and freelance roles.' }
   ];
 
   // ── selectors (pure) ────────────────────────────────────────────────────────────────────────────────
 
-  function isInstallable(entry) { return !!entry && INSTALLABLE_AUTH.indexOf(entry.authType) >= 0; }
+  function isInstallable(entry) { return !!entry && !entry.externalSite && INSTALLABLE_AUTH.indexOf(entry.authType) >= 0; }
 
   // a defensive clone so callers (and the JSON route) can never mutate the frozen seed.
   function cloneEntry(e) {
     return {
       id: e.id, name: e.name, category: e.category, authType: e.authType, transport: e.transport,
       url: e.url || '', googleApi: !!e.googleApi, deviceFlow: !!e.deviceFlow, official: !!e.official, homepage: e.homepage || '', blurb: e.blurb || '',
-      via: e.via || '', keyHeader: e.keyHeader || '', local: !!e.local, installable: isInstallable(e),
+      via: e.via || '', keyHeader: e.keyHeader || '', local: !!e.local, externalSite: !!e.externalSite, installable: isInstallable(e),
       // staticOauth: fixed OAuth endpoints for an AS with no dynamic registration (Google). Deep-cloned.
       staticOauth: e.staticOauth ? {
         authorizationServer: e.staticOauth.authorizationServer,

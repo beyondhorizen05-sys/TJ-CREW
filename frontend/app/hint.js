@@ -137,6 +137,9 @@
   }
 
   function wireDelegation() {
+    // Hover help is intentionally disabled station-wide by the Commander. Keep the public Hint
+    // API as a no-op so callers can continue marking explanatory labels without creating popups.
+    return;
     if (!doc) return;
     if (!HAS_TOUCH) {
       // desktop: hover + keyboard focus.

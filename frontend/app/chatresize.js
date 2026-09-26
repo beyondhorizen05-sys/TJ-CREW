@@ -22,6 +22,35 @@
     window.dispatchEvent(new Event('resize'));
   });
 
+  // HIDE / SHOW mirrors the Crew rail: keep the preference per machine and leave a slim drawer
+  // handle on the workspace so COMMS is always one click away.
+  const hideKey = 'starnet.commsrail';
+  const hide = document.getElementById('comms-hide');
+  const show = document.getElementById('comms-show');
+  function applyHidden(off) {
+    if (off && game.classList.contains('comms-expanded')) {
+      game.classList.remove('comms-expanded');
+      if (expand) { expand.textContent = 'EXPAND'; expand.setAttribute('aria-pressed', 'false'); expand.setAttribute('aria-label', 'Expand conversation'); }
+    }
+    document.body.classList.toggle('comms-rail-off', off);
+    if (show) show.hidden = !off;
+    if (hide) hide.setAttribute('aria-expanded', String(!off));
+    window.dispatchEvent(new Event('resize'));
+  }
+  function setHidden(off) {
+    applyHidden(off);
+    try { off ? localStorage.setItem(hideKey, 'off') : localStorage.removeItem(hideKey); } catch (_) {}
+  }
+  try { if (localStorage.getItem(hideKey) === 'off') applyHidden(true); } catch (_) {}
+  if (hide) hide.addEventListener('click', () => {
+    setHidden(true);
+    try { if (typeof SFX === 'object' && SFX.close) SFX.close(); } catch (_) {}
+  });
+  if (show) show.addEventListener('click', () => {
+    setHidden(false);
+    try { if (typeof SFX === 'object' && SFX.click) SFX.click(); } catch (_) {}
+  });
+
   // All of these are VISUAL px, and so is --chat-w. The grid holds the cabinet at its designed
   // size regardless of TEXT SIZE (app.css `#screen-game.active` counter-zooms every frame
   // dimension), so the padding/gap/rail the seam has to clear no longer move with the zoom — and a

@@ -602,8 +602,22 @@ const Harness = (() => {
       let list;
       const p = normalizeProviderId(provider || getProv());
       try {
-        const q = (p === 'custom' && getBaseUrl(p)) ? ('?baseUrl=' + encodeURIComponent(getBaseUrl(p))) : '';
-        list = await fetchModelCatalog('/api/models/' + encodeURIComponent(p) + q, 'models');
+        // A browser Custom/BYOK key lives in scoped browser storage, not in the sidecar. Use the
+        // one-shot loopback lookup so authenticated OpenAI-compatible routers can populate the same
+        // catalog used by the Model picker. The key is never included in a URL or returned by the API.
+        if (p === 'custom' && getBaseUrl(p) && getKey(p)) {
+          const r = await fetch('/api/models/lookup', {
+            method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ provider: p, baseUrl: getBaseUrl(p), key: getKey(p) })
+          });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const j = await r.json();
+          if (j && j.error) throw new Error(j.error);
+          list = ((j && j.models) || []).map(normalizeModel).filter(m => m.id);
+        } else {
+          const q = (p === 'custom' && getBaseUrl(p)) ? ('?baseUrl=' + encodeURIComponent(getBaseUrl(p))) : '';
+          list = await fetchModelCatalog('/api/models/' + encodeURIComponent(p) + q, 'models');
+        }
       } catch (_) {
         if (p === 'openrouter') list = await fetchModelCatalog(OR + '/models', 'data');
         else list = [];
@@ -739,6 +753,17 @@ const Harness = (() => {
       if (!DESKTOP && !DEVMODE && provider !== 'codex' && provider !== 'grok' && provider !== 'kimi') reqBody.key = key;   // dev/desktop + the OAuth providers keep secrets server-side (custom/ollama may still ride an optional key)
       if (!DESKTOP && !DEVMODE) {
         try { const pool = JSON.parse(readScoped(LS.keyPool, provider) || '[]'); if (Array.isArray(pool) && pool.length) reqBody.keyPool = pool; } catch (_) {}
+      }
+      // A Custom router supplies its own live catalog. Carry the next advertised models with this
+      // run so the sidecar can retry the same untouched conversation on a sibling model when the
+      // selected one returns a transient/provider failure. Eight is a deliberate ceiling: enough
+      // recovery paths for a router outage without turning one user request into hundreds of calls.
+      if (provider === 'custom') {
+        try {
+          const customModels = await listModels('custom');
+          const fallbacks = customModels.map(m => String(m && m.id || '').trim()).filter(id => id && id !== model).slice(0, 8);
+          if (fallbacks.length) reqBody.fallbackModels = fallbacks;
+        } catch (_) {}
       }
       res = await fetch('/api/run', {
         method: 'POST', signal,

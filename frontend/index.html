@@ -50,11 +50,12 @@
 <link rel="stylesheet" href="css/overseer-setup.css">
 <link rel="stylesheet" href="css/comms-layout.css">
 <link rel="stylesheet" href="css/project-home.css">
+<link rel="stylesheet" href="css/solid-ui.css"><!-- calm, solid-color presentation layer -->
 
 <link rel="stylesheet" href="css/titlebar.css"><!-- custom window chrome (Windows desktop shell): themed titlebar + MIN/MAX/CLOSE; inert unless body.sn-chrome (titlebar.js) -->
 
 </head>
-<body class="theme-amber glass-demo">
+<body class="theme-amber glass-demo no-scan no-flicker">
 
 <!-- ============ BOOT VEIL ============ -->
 <!-- The ONLY screen that ships class="active": a neutral phosphor holding-card shown during init()'s async
@@ -551,6 +552,8 @@
     <!-- CREW rail restore handle (leftrail.js): a slim phosphor drawer tab on the stage's left edge,
          visible only while the rail is hidden -->
     <button id="crew-show" class="crew-show" type="button" title="Show the crew rail" aria-label="Show the crew rail" hidden>▸ CREW</button>
+    <!-- COMMS rail restore handle: mirrors the Crew drawer on the workspace's right edge. -->
+    <button id="comms-show" class="comms-show" type="button" title="Show the COMMS rail" aria-label="Show the COMMS rail" hidden>◂ COMMS</button>
   </div>
 
   <!-- CREW / stage divider (leftrail.js): the mirror of the COMMS seam. It is a GRID CHILD, not a
@@ -561,7 +564,7 @@
 
   <aside id="chat-panel">
     <div id="comms-resizer" class="col-resizer" title="drag to resize COMMS" role="separator" aria-orientation="vertical" aria-label="Resize COMMS panel"><span class="col-resizer-grip"></span></div>
-    <h3><span id="comms-title">▮ COMMS</span><span class="h3-right"><span class="dim" id="chat-status" role="status" aria-live="polite" aria-atomic="true">offline</span><span class="chat-elapsed" id="chat-elapsed" aria-hidden="true"></span><button id="comms-expand" type="button" aria-label="Expand conversation" aria-pressed="false" aria-controls="chat-panel">EXPAND</button></span></h3>
+    <h3><span id="comms-title">▮ COMMS</span><span class="h3-right"><span class="dim" id="chat-status" role="status" aria-live="polite" aria-atomic="true">offline</span><span class="chat-elapsed" id="chat-elapsed" aria-hidden="true"></span><button id="comms-expand" type="button" aria-label="Expand conversation" aria-pressed="false" aria-controls="chat-panel">EXPAND</button><button id="comms-hide" class="comms-hide" type="button" title="Hide the COMMS rail" aria-label="Hide the COMMS rail" aria-expanded="true">▸</button></span></h3>
     <!-- AGENT LINE (chat.js): pick which roster agent you're talking to + a truthful readout of that agent's
          current model. The <select> options + the model text are filled from the LIVE roster (App.agents),
          never hardcoded — the header is honest about who's on the line and what they run on. -->
@@ -684,7 +687,7 @@
       </div>
     </div>
     <div class="bb-group" data-group="system">
-      <button class="bb-grp" data-hint="system" aria-haspopup="menu" aria-expanded="false" title="Station systems — manual, settings, updates, notifications"><span class="bb-gi">▣</span>SYSTEM<span id="bb-sys-badge" class="bb-grp-badge" aria-label="unread notifications" hidden></span></button>
+      <button class="bb-grp" aria-haspopup="menu" aria-expanded="false"><span class="bb-gi">▣</span>SYSTEM<span id="bb-sys-badge" class="bb-grp-badge" aria-label="unread notifications" hidden></span></button>
       <div class="bb-menu" role="menu">
         <!-- NAV CONDENSE 2: LOGBOOK + RESTORE are per-agent and live in the AGENTS dossier
              (LOGBOOK / RESTORE tabs); openTerm keeps the old keys as deep links. UPDATES stays

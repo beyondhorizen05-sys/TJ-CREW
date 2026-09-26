@@ -1587,6 +1587,13 @@ body.no-curve #stage-wrap::before { background: none; box-shadow: none; }
   min-height: 126px; max-height: 236px; overflow: auto; padding-right: 2px;
   border-top: 1px solid var(--ph-faint); border-bottom: 1px solid var(--ph-faint);
 }
+.model-dock-auto {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 6px; cursor: pointer; color: var(--ink); background: var(--ph); border: 0;
+  border-bottom: 1px solid var(--ph-faint); font: inherit; font-size: 11px; letter-spacing: .8px;
+}
+.model-dock-auto:hover, .model-dock-auto:focus-visible { color: var(--ph-bright); background: var(--ph-faint); outline: 1px solid var(--ph); outline-offset: -2px; }
+.model-dock-auto span:last-child { font-size: 10px; letter-spacing: .2px; opacity: .78; }
 .model-dock-group {
   color: var(--gold); font-size: 11px; padding: 8px 3px 3px;
   border-bottom: 1px solid var(--ph-faint);
@@ -3753,6 +3760,22 @@ body.crew-rail-off #left { display: none; }
 body.crew-rail-off #screen-game.active {
   grid-template-columns: 1fr var(--chat-w, 360px);
   grid-template-areas: "top top" "center chat" "bot bot";
+}
+
+/* ---- COMMS rail hidden (chatresize.js): the right column leaves the grid and the station view
+   takes the released space. The inward-facing ◂ COMMS drawer is kept inside the workspace. ---- */
+body.comms-rail-off :is(#chat-panel, #comms-resizer) { display: none; }
+body.comms-rail-off #screen-game.active {
+  grid-template-columns: calc(var(--crew-w, 232px) * var(--cz)) 1fr;
+  grid-template-areas: "top top" "left center" "bot bot";
+}
+body.crew-rail-off.comms-rail-off #screen-game.active {
+  grid-template-columns: 1fr;
+  grid-template-areas: "top" "center" "bot";
+}
+@media (max-width: 860px) {
+  body.comms-rail-off #screen-game.active { grid-template-columns: 1fr; grid-template-areas: "top" "left" "center" "bot"; }
+  body.crew-rail-off.comms-rail-off #screen-game.active { grid-template-areas: "top" "center" "bot"; }
 }
 @media (max-width: 1120px) {
   body.crew-rail-off #screen-game.active { grid-template-columns: 1fr var(--chat-w, 300px); }

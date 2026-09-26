@@ -153,9 +153,9 @@ const KeyCTA = (() => {
     spoke = true;
     let nm = ''; try { if (typeof App !== 'undefined' && App.currentAgent) { const a = App.currentAgent(); nm = (a && a.name) || ''; } } catch (_) {}
     const label = gap.provider.toUpperCase();
-    const who = nm ? nm.toLowerCase() + ' — ' : '';
+    const who = nm ? nm + ' — ' : '';
     if (gap.kind === 'nomodel') {
-      spokenLine = Chat.localLine(who + 'no model is selected for ' + label + '. choose a model to send a message.');
+      spokenLine = Chat.localLine(who + 'needs a model for ' + label + '. Choose a model to send a message.');
     } else if (gap.kind === 'unlinked') {
       spokenLine = Chat.localLine(who + 'i’m awake, but no brain is wired: this station has no linked managed account, so i can’t actually run anything yet. wire a different provider, or run me free on a local model.');
     } else {
