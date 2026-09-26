@@ -1,12 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const ui=fs.readFileSync(path.join(__dirname,'../frontend/app/stationui.js'),'utf8');
-const messaging=fs.readFileSync(path.join(__dirname,'../frontend/app/windows/messaging.js'),'utf8');
+const messaging=fs.readFileSync(path.join(__dirname,'../frontend/app/windows/messaging.js'),'utf8').replace(/\r\n/g, '\n');
 const handlers=[...ui.matchAll(/Harness\.api\.post\('\/api\/execution\/(?:policy|ssh|sync|cleanup)'[\s\S]*?\.catch\(\(\) => \{[^\n]*\}\);/g)].map(m=>m[0]);
 assert.equal(handlers.length,5,'all execution mutation handlers must be exercised');
-const disconnect=messaging.slice(messaging.indexOf("          try { await Harness.api.post('/api/channels/'"),messaging.indexOf('          refreshAll();',messaging.indexOf("          try { await Harness.api.post('/api/channels/'"))+'          refreshAll();'.length);
-const disconnectNewStart=messaging.indexOf("          try {\n            const r = await Harness.api.post('/api/channels/'");
-const disconnectCode=disconnectNewStart>=0?messaging.slice(disconnectNewStart,messaging.indexOf('          refreshAll();',disconnectNewStart)+'          refreshAll();'.length):disconnect;
+const _disStart = "try {\n            const r = await Harness.api.post('/api/channels/' + c.id + '/disconnect', {});";
+const _disAt = messaging.indexOf(_disStart);
+const disconnect = messaging.slice(_disAt, messaging.indexOf('refreshAll();', _disAt) + 'refreshAll();'.length);
 let checks=0,failed=0;const check=fn=>{checks++;try{fn();}catch(e){failed++;console.error(e.message);}};
 (async()=>{
  for(const code of handlers){
@@ -18,7 +18,7 @@ let checks=0,failed=0;const check=fn=>{checks++;try{fn();}catch(e){failed++;cons
   }
  }
  for(const reply of [{ok:false,j:{}},{ok:true,j:{}},{ok:true,j:{connected:false,persisted:false}},{ok:true,j:{connected:true,persisted:true}},{ok:true,j:{connected:false,persisted:true}}]){
-  const notices=[];await vm.runInNewContext('(async()=>{'+disconnectCode+'})()', {Harness:{api:{post:async()=>reply}},c:{id:'telegram'},msgEl:{},setMsg:(_el,text)=>notices.push(text),sfx:()=>{},refreshAll:()=>{}});
+  const notices=[];await vm.runInNewContext('(async()=>{'+disconnect+'})()', {Harness:{api:{post:async()=>reply}},c:{id:'telegram'},msgEl:{},setMsg:(_el,text)=>notices.push(text),sfx:()=>{},refreshAll:()=>{}});
   check(()=>assert.equal(notices.some(x=>x.startsWith('disconnected — token kept')),reply.ok&&reply.j.connected===false&&reply.j.persisted===true,'disconnect must be confirmed and durable'));
  }
  console.log(`control acknowledgements: ${checks-failed}/${checks} checks passed`);process.exitCode=failed?1:0;
