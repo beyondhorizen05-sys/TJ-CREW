@@ -102,7 +102,7 @@ A.ok(idx.indexOf('app/autojobs.js') < idx.indexOf('app/autopilot.js'),
 /* ══════════════════════════════════════════════════════════════════════════════════════════════════════════
    3. ONE CARD GRAMMAR + ONE HEADER FAMILY ACROSS EVERY SHELF
    ══════════════════════════════════════════════════════════════════════════════════════════════════════════ */
-const mkt = read('frontend/app/marketplace.js');
+const mkt = read('frontend/app/marketplace.js').replace(/\r\n/g, '\n');
 // the glyph sweep below must read CODE, not the block comment that documents which glyphs were retired.
 const mktCode = mkt.replace(/\/\*[\s\S]*?\*\//g, '');
 // the two recruiter shelves rendered `it.why` raw — the one place the bay names a real counter was the one

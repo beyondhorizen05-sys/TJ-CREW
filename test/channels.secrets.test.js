@@ -210,7 +210,7 @@ const root = path.resolve(__dirname, '..');
 
 // ---- G. sidecar host wiring (static guard on index.js) ----
 {
-  const src = fs.readFileSync(path.join(root, 'sidecar', 'index.js'), 'utf8');
+  const src = fs.readFileSync(path.join(root, 'sidecar', 'index.js'), 'utf8').replace(/\r\n/g, '\n');
   A.ok(/require\(['"]\.\/channels\/secrets\.js['"]\)/.test(src), 'index.js requires the secrets module');
   A.ok(/DESKTOP_SHELL\s*=\s*\/\^\(1\|true\|yes\|on\)/.test(src), 'index.js derives DESKTOP_SHELL from the shell env');
   A.ok(/channelTokenRuntime/.test(src), 'index.js has a runtime channel-token layer');
@@ -302,7 +302,7 @@ const root = path.resolve(__dirname, '..');
 
 // ---- I. Rust shell wiring (static guard on main.rs) ----
 {
-  const mainRs = fs.readFileSync(path.join(root, 'src-tauri', 'src', 'main.rs'), 'utf8');
+  const mainRs = fs.readFileSync(path.join(root, 'src-tauri', 'src', 'main.rs'), 'utf8').replace(/\r\n/g, '\n');
   const credentialsRs = fs.readFileSync(path.join(root, 'src-tauri', 'src', 'credentials.rs'), 'utf8');
   const nativeRs = mainRs + '\n' + credentialsRs;
   A.ok(/mod credentials;/.test(mainRs), 'main.rs owns one focused native credential module');
