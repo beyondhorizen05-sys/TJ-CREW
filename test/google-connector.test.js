@@ -87,7 +87,7 @@ const catalog = require('../sidecar/mcp/catalog.js');
   assert.ok(!/data-cc-oclient|enroll in the preview|placeholder="client secret"/.test(ui));
   assert.ok(ui.includes('SIGN IN WITH GOOGLE'));
   const train = fs.readFileSync(path.join(__dirname, '../.github/workflows/release-train.yml'), 'utf8');
-  assert.ok(train.includes('run: node scripts/stage-google-client.mjs\n'));
+  assert.ok(/run: node scripts\/stage-google-client\.mjs\r?\n/.test(train), 'release train stages the Google client credentials');
   assert.ok(!train.includes('stage-google-client.mjs --optional'));
   const stageRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'starnet-google-stage-'));
   try {
