@@ -53,7 +53,10 @@ function decomment(src) {
 
 for (const f of files) {
   if (EXCLUDE.has(path.relative(base, f))) continue;   // ambient composition root — exempt by design
-  const src = decomment(fs.readFileSync(f, 'utf8'));
+  // CRLF checkouts: normalize first so the // comment stripper (which anchors on \n) blanks
+  // comment lines before the banned-pattern scan. Line numbers are preserved (no lines added
+  // or removed), so reported locations stay exact on every platform.
+  const src = decomment(fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n'));
   src.split('\n').forEach((ln, i) => {
     const code = ln.replace(/(^|[^:])\/\/.*$/, '$1');
     banned.forEach((re, bi) => {
