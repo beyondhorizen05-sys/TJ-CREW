@@ -80,13 +80,17 @@ const { makeSkillPrefs } = require('../sidecar/skills/prefs.js');
   // why almost every port ships default:false; forcing them ALL on must degrade gracefully, never blow the window).
   const ALL_OBJECTS = ['computer', 'notebook', 'cabinet', 'dish', 'workbench', 'studio', 'jukebox', 'orchestrator', 'connector'];
   const forceOn = {}; for (const s of skills) forceOn[s.slug] = true;
-  const full = C.compose(skills, { overrides: forceOn, placedTypes: ALL_OBJECTS, budget: 12000 });
+  // Canonicalize CRLF checkouts to LF before measuring: the budget invariant is about recipe CONTENT,
+  // and a bare \r-per-line checkout artifact (no .gitattributes in this repo; Windows autocrlf) is not
+  // content. On LF checkouts this is the identity transform, so the measured bytes are unchanged there.
+  const canonical = skills.map(s => Object.assign({}, s, { body: String(s.body).replace(/\r\n/g, '\n') }));
+  const full = C.compose(canonical, { overrides: forceOn, placedTypes: ALL_OBJECTS, budget: 12000 });
   A.ok(/omitted here to keep the prompt lean/.test(full), 'the full expanded catalog exceeds 12k -> compose omit-flags the overflow (no silent truncation)');
   // the SHIPPED-DEFAULT set (frontmatter default:true only) fits under budget and omits nothing — proof the ports
   // didn't sneak anything on-by-default that eats the prompt window. The legibility redesign intentionally ships
   // EVERY no-gear (compute-only) recipe ON so a fresh station injects a useful set, not just 2; each is a small,
   // broadly-usable body, so the whole set still fits the 12k compose budget with no omission.
-  const shipped = C.compose(skills, { overrides: {}, placedTypes: ALL_OBJECTS, budget: 12000 });
+  const shipped = C.compose(canonical, { overrides: {}, placedTypes: ALL_OBJECTS, budget: 12000 });
   A.ok(shipped.length < 12000 && !/omitted/.test(shipped), 'the default-on shipped skill set fits the compose budget with no omission');
   // pin the shipped default set: exactly the no-gear (compute-only) recipes ship ON. If a new gear-gated skill ever
   // flips default:true (eating the prompt window), or a no-gear one silently regresses to off, this catches it.
