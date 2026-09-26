@@ -323,7 +323,7 @@
         id: 'arc:step:' + m.id, kind: 'arc-step', title: (isDone ? 'done — ' : (isNext ? '▸ ' : '· ')) + clip(m.text, 120),
         desc: isDone ? ('done.' + (m.evidence ? ' ' + m.evidence : ''))
           : inFlight ? 'in progress — the build is running; finishing it completes this step.'
-          : (isNext ? 'the next step — do it yourself or ask StarNet for help.' : 'another planned step — you can choose it next in Goals.'),
+          : (isNext ? 'the next step — do it yourself or ask TJ Crew Station for help.' : 'another planned step — you can choose it next in Goals.'),
         reward: 'progress on “' + clip(goal.text, 60) + '”', status,
         arcGoalId: goal.id, milestoneId: m.id, isNext: !!isNext, inFlight: inFlight
       });

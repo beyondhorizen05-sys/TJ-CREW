@@ -152,13 +152,13 @@ const Updates = (() => {
         state.update = r.update;
         state.phase = 'available';
         if (CORE.shouldNotify(prefs, r.update.version, Date.now(), !!r.update.critical)) {
-          notify((r.update.critical ? 'Critical update' : 'StarNet update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold');
+          notify((r.update.critical ? 'Critical update' : 'TJ Crew Station update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold');
           prefs = CORE.recordNotified(prefs, r.update.version);
         }
       } else {
         state.update = null;
         state.phase = 'current';
-        if (manual) notify('StarNet is up to date', 'good');
+        if (manual) notify('TJ Crew Station is up to date', 'good');
       }
       savePrefs();
     } catch (e) {
@@ -253,7 +253,7 @@ const Updates = (() => {
   async function install(opts) {
     opts = opts || {};
     if (!TAURI || !CORE || busy || !state.update) {
-      notify('No StarNet update is ready to install', 'warn');
+      notify('No TJ Crew Station update is ready to install', 'warn');
       return snapshot();
     }
     const Channel = TAURI.Channel;
@@ -286,7 +286,7 @@ const Updates = (() => {
     const drained = await preInstallDrain();
     if (!drained.ok) {
       state.phase = 'available';
-      state.error = 'State could not be verified on disk. The update was not installed; your current StarNet remains open.';
+      state.error = 'State could not be verified on disk. The update was not installed; your current TJ Crew Station remains open.';
       busy = false;
       notify('Update paused - state verification failed', 'warn');
       emit();
@@ -308,7 +308,7 @@ const Updates = (() => {
     try {
       await invoke('starnet_update_install', { onEvent });
       state.phase = 'restarting';
-      notify('StarNet update installed - restarting', 'good');
+      notify('TJ Crew Station update installed - restarting', 'good');
     } catch (e) {
       installing = false;   // install failed; the app lives on, so the quit guard resumes normally
       let thawError = null;
@@ -362,7 +362,7 @@ const Updates = (() => {
     savePrefs();
     state.update = null;
     state.phase = 'idle';
-    notify('StarNet v' + prefs.ignoredVersion + ' will be skipped', 'warn');
+    notify('TJ Crew Station v' + prefs.ignoredVersion + ' will be skipped', 'warn');
     schedule();
     emit();
   }
@@ -440,7 +440,7 @@ const Updates = (() => {
           (update.critical ? '' : '<button class="bb sm danger" id="up-ignore">SKIP VERSION</button>') + '</div></div>';
       }
     } else {
-      out += '<div class="up-empty">No update is pending. StarNet will keep checking in the background while automatic checks are on.</div>';
+      out += '<div class="up-empty">No update is pending. TJ Crew Station will keep checking in the background while automatic checks are on.</div>';
     }
     if (state.phase === 'preparing' || state.phase === 'downloading' || state.phase === 'installing' || state.phase === 'restarting') {
       out += '<div class="up-progress"><div style="width:' + pct + '%"></div></div>' +

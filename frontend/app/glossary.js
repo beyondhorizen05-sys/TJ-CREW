@@ -33,7 +33,7 @@
     context:      'the conversation and evidence currently visible to the model; older material can be compacted safely.',
     fallback:     'the next configured model or credential tried when the current provider cannot continue.',
     settings:     'the station controls for providers, models, voice, budget, permissions, and saved data.',
-    update:       'a new StarNet build; the UPDATES panel shows the version and its verified delivery state.',
+    update:       'a new TJ Crew Station build; the UPDATES panel shows the version and its verified delivery state.',
     restore:      'return an agent’s workspace files to a saved restore point without rewriting unrelated station data.',
     logbook:      'this agent’s durable run history — what ran, how it ended, and what it cost.',
     notification: 'a station alert about work, failure, delivery, or another event that needs your attention.',

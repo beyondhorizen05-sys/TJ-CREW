@@ -144,7 +144,7 @@ function openRun(opts) {
   const o = opts || {};
   return new Promise((resolve, reject) => {
     discoverToken().then(async (token) => {
-      if (!token) return reject(new Error('StarNet is not running (or its API token could not be read) at ' + BASE_LABEL + ' — start StarNet and try again'));
+      if (!token) return reject(new Error('TJ Crew Station is not running (or its API token could not be read) at ' + BASE_LABEL + ' — start TJ Crew Station and try again'));
 
       let info = await rawRequest('GET', '/api/runtime/agent', null, true, token);
       // A rejected token means the station restarted. Re-scrape the live one and retry ONCE, rather than telling
@@ -153,11 +153,11 @@ function openRun(opts) {
         const fresh = await discoverToken();
         if (fresh && fresh !== token) { token = fresh; info = await rawRequest('GET', '/api/runtime/agent', null, true, token); }
       }
-      if (!info.ok) return reject(new Error('StarNet is not reachable at ' + BASE_LABEL + ': ' + (info.error || 'connection failed')));
-      if (info.status === 401 || info.status === 403) return reject(new Error('StarNet rejected this bridge\'s API token — restart the editor so it re-reads the station token'));
+      if (!info.ok) return reject(new Error('TJ Crew Station is not reachable at ' + BASE_LABEL + ': ' + (info.error || 'connection failed')));
+      if (info.status === 401 || info.status === 403) return reject(new Error('TJ Crew Station rejected this bridge\'s API token — restart the editor so it re-reads the station token'));
       const rt = info.json || {};
       if (!rt.configured) {
-        return reject(new Error('StarNet has no runnable model configured'
+        return reject(new Error('TJ Crew Station has no runnable model configured'
           + (rt.model ? '' : ' (no default model set)')
           + ' — open the station and set a provider key + model first'));
       }
@@ -202,7 +202,7 @@ function openRun(opts) {
           if (res.statusCode !== 200) {
             const chunks = [];
             res.on('data', d => chunks.push(d));
-            res.on('end', () => finish(reject, new Error('StarNet refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
+            res.on('end', () => finish(reject, new Error('TJ Crew Station refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
             return;
           }
           res.setEncoding('utf8');

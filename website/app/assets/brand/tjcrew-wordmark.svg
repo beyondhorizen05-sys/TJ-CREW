@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 799 480" role="img" aria-label="TJ Crew">
+<title>TJ Crew</title>
+<!-- Traced from frontend/assets/brand/tjcrew-mark.png by dev/trace-logo.mjs, preset solid
+     (field 799x480, sigma 1.2@100, iso 0.3, rdp 1.6@100, smooth 24).
+     These are the master art's OWN forms recovered from its perceived-density field, not a redraw.
+     Regenerate, never hand-edit; rerun the script if the master ever changes.
+     NB: no double hyphen anywhere in this comment. XML forbids it, an SVG that trips it fails to
+     parse, and a CSS mask whose image fails to parse renders the masked element INVISIBLE. -->
+<path fill="currentColor" fill-rule="evenodd" d="M125 0.23L133.79 21.72L227.78 111.73L387.92 120.63L323.91 291.41L214.47 301.75L304.05 423.44L349.13 457.38L408.7 474.82L495.87 475.37L563.48 455.99L641.27 385.76L715.87 172.37L782.75 95.3L624.81 95.31L523.04 200.55L526.71 212.77L566.98 215.06L526.19 331.69L498.43 355.92L459.78 362.67L538.18 122.68L611.33 78.82L726.9 76.4L793.29 3.1L347.59 0.39Z"/>
+</svg>

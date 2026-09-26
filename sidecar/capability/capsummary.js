@@ -70,7 +70,7 @@ function summarizeCapabilities(resolved, opts) {
 
   let note = '\n<capabilities_ground_truth>\n' +
     (unrestrictedHost
-      ? 'FULL POWER is active: the Commander authorized the whole local computer. StarNet policy must not refuse a host task; only report real unavailable OS, hardware, credential, account, or service prerequisites. '
+      ? 'FULL POWER is active: the Commander authorized the whole local computer. TJ Crew Station policy must not refuse a host task; only report real unavailable OS, hardware, credential, account, or service prerequisites. '
       : 'These are your REAL powers this run, decided by the objects placed on your station floor and host-granted station roles -- not aspirational. ') +
     'This block is AUTHORITATIVE: if anything earlier in your instructions implies you always have web or file access, ignore it -- what follows is what you ACTUALLY have right now:\n' +
     '- You CAN: ' + haveStr + '.\n';

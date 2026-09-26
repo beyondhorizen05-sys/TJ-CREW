@@ -655,7 +655,7 @@ const Voice = (() => {
     const desktop = !!(window.__TAURI__ || window.__TAURI_INTERNALS__);
     const mac = /Mac/i.test(navigator.platform || navigator.userAgent || '');
     return desktop && mac
-      ? 'Microphone blocked — enable StarNet in System Settings → Privacy & Security → Microphone, then quit and reopen StarNet. If it is missing or still blocked, install the latest StarNet build.'
+      ? 'Microphone blocked — enable TJ Crew Station in System Settings → Privacy & Security → Microphone, then quit and reopen TJ Crew Station. If it is missing or still blocked, install the latest TJ Crew Station build.'
       : desktop ? 'Microphone blocked — allow microphone access for desktop apps in your system privacy settings, then try again.'
         : 'Microphone blocked — allow microphone access for this page in your browser, then try again.';
   }

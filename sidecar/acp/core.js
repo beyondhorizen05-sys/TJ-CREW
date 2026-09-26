@@ -192,7 +192,7 @@
     /* path.trust is not a tool the model calls — it is the station's FOLDER-TRUST ask, and because an ACP
        session sends its cwd as the project root it is very often the FIRST card a user ever sees here. Titling
        it "path.trust" made the most important first impression unreadable. */
-    if (n === 'path.trust' && path) return 'Allow StarNet to work in ' + short(path);
+    if (n === 'path.trust' && path) return 'Allow TJ Crew Station to work in ' + short(path);
     if (n === 'shell.exec' && args && args.cmd) return 'Run ' + short(args.cmd);
     if (n === 'shell.exec' && args && args.command) return 'Run ' + short(args.command);
     if (n === 'verify.run' && args && args.cmd) return 'Verify ' + short(args.cmd);
@@ -236,9 +236,9 @@
      Returned as a plain sentence appended as a final agent message chunk. */
   function endNote(reason) {
     const r = str(reason);
-    if (r === 'budget') return '\n\n(stopped: this run hit a spend cap — raise or clear it in StarNet under MISSION CONTROL → BUDGET.)';
+    if (r === 'budget') return '\n\n(stopped: this run hit a spend cap — raise or clear it in TJ Crew Station under MISSION CONTROL → BUDGET.)';
     if (r === 'max_iters') return '\n\n(stopped: reached the step limit for one turn — send "continue" to keep going.)';
-    if (r === 'error') return '\n\n(stopped: the run failed inside StarNet — check the station log for the error.)';
+    if (r === 'error') return '\n\n(stopped: the run failed inside TJ Crew Station — check the station log for the error.)';
     return '';
   }
 

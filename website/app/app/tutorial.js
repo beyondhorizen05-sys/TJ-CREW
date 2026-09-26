@@ -554,7 +554,7 @@ const Tutorial = (() => {
     if (!active) return;
     const line = (why === 'brain')
       ? 'the file example hasn’t started. choose a model in COMMS and check its connection in SYSTEM › SETTINGS, then try again. adding more equipment won’t fix a model connection.'
-      : 'the file example hasn’t started because the local service isn’t responding. reconnect or restart StarNet, then try again. your station does not need rebuilding.';
+      : 'the file example hasn’t started because the local service isn’t responding. reconnect or restart TJ Crew Station, then try again. your station does not need rebuilding.';
     say([seg(line, 52, 0)], () => finishOrientation(true));
   }
   /* ---- the kit-out spotlight: a coach bubble PINNED to a safe zone (.tut-coach.kit — so it can never cover the
