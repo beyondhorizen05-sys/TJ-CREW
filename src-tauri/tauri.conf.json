@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "StarNet",
+  "productName": "TJ Crew Station",
   "version": "0.12.4",
-  "identifier": "ai.skynet.harness",
+  "identifier": "com.tjcrew.station",
   "build": {
     "frontendDist": "frontend-embed"
   },
@@ -15,7 +15,7 @@
   },
   "bundle": {
     "active": true,
-    "publisher": "Andrew Sims",
+    "publisher": "TJ Crew",
     "targets": [
       "nsis"
     ],
