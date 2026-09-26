@@ -18,7 +18,7 @@
   "expectedClaimCount": 37,
   "releaseSurface": {
     "algorithm": "sha256",
-    "sourceCommit": "025e25137ad4797fa23a52bd90cecf4d1cb6e51b",
+    "sourceCommit": "8aaff8b5934697b1137bd095bf008950fd50ff3e",
     "pathSetSha256": "624df0d0e5b2511e74e175d045f26a8fd916195933e6750693b47d486e2e7b31",
     "files": [
       {
@@ -168,8 +168,8 @@
       },
       {
         "path": "frontend/app/app.js",
-        "bytes": 385981,
-        "sha256": "636e3af86cac7edb299dff84d3dd4226e632deee2f3046ee9655d5207de0c928"
+        "bytes": 385997,
+        "sha256": "86f21503fd16b42ea95a17433f2a02f65d930502279908bb91f3f62df5eb0f36"
       },
       {
         "path": "frontend/app/approved-sheet-effects.js",
@@ -323,8 +323,8 @@
       },
       {
         "path": "frontend/app/chat.js",
-        "bytes": 660225,
-        "sha256": "08ccd1b5a49b838ef3cb5ba1846b66a546a133e1af20dfe4d9460154069eaacf"
+        "bytes": 660249,
+        "sha256": "71b0bf81bce400977cfa1b49ad4158a55838c151a219fefdd5179b8a9c622867"
       },
       {
         "path": "frontend/app/chatresize.js",
@@ -519,7 +519,7 @@
       {
         "path": "frontend/app/harness.js",
         "bytes": 84806,
-        "sha256": "bdd1f46f527f2dd11d76d86c04c656044ad55f9eef2730188f83cc18b71d69fe"
+        "sha256": "60cf0e3c350afa89e75817a2e5f6253e6fd5f0ab897dc4bd1777d9e8562339c2"
       },
       {
         "path": "frontend/app/hint.js",
@@ -1058,8 +1058,8 @@
       },
       {
         "path": "frontend/app/stationui.js",
-        "bytes": 736930,
-        "sha256": "5dec03f78ecc137bd88c0a112c30a78b18b82b273df85f5b612cd05ea6ef3aaf"
+        "bytes": 736953,
+        "sha256": "ca7cd61c6d73add9cd3e56b70d851f174ace0317d15b37fd3dc4b7ddc49e15d0"
       },
       {
         "path": "frontend/app/study.js",
@@ -1158,8 +1158,8 @@
       },
       {
         "path": "frontend/app/updates.js",
-        "bytes": 22270,
-        "sha256": "7eb9a39934613eb01ec59044eb49b5e75164139ee346d4b7be472db0302e6817"
+        "bytes": 22278,
+        "sha256": "3efb9b68935b62b7b0f86b5744c73ead35dcb9130eca01af54c5a2bfbec51310"
       },
       {
         "path": "frontend/app/verdictfollowup.js",
