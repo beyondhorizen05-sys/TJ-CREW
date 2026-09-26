@@ -3982,8 +3982,8 @@ const Chat = (() => {
       const saved = res.applied
         ? ('✓ implemented — applied to branch ' + (res.branch || '?') + (res.root ? (' in ' + res.root) : ''))
         : res.savedOnly
-          ? ('⚠ patch file saved to ' + (res.destPath || 'your StarNet deliverables folder') + ' — NOT applied to your project')
-          : ('✓ implemented — files saved to ' + (res.destPath || 'your StarNet deliverables folder'));
+          ? ('⚠ patch file saved to ' + (res.destPath || 'your TJ Crew Station deliverables folder') + ' — NOT applied to your project')
+          : ('✓ implemented — files saved to ' + (res.destPath || 'your TJ Crew Station deliverables folder'));
       decideNote(saved); sendNote(); settle(saved, false, res.applied ? '' : (res.destPath || ''));
     };
     acts.appendChild(implBtn);
@@ -7801,7 +7801,7 @@ const Chat = (() => {
       const j = r.ok ? await r.json() : null;
       if (j) {
         const bits = [];
-        if (j.app) bits.push('StarNet ' + j.app);
+        if (j.app) bits.push('TJ Crew Station ' + j.app);
         if (j.harness && j.harness !== j.app) bits.push('harness ' + j.harness);
         if (j.node) bits.push('Node ' + j.node);
         return localLine('Version: ' + (bits.length ? bits.join(', ') : 'unknown') + '.');

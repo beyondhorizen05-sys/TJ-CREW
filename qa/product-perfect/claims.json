@@ -2359,7 +2359,7 @@
       "surfaceLocators": [
         {
           "path": "frontend/app/windows/messaging.js",
-          "needle": "Keep StarNet running."
+          "needle": "Keep TJ Crew Station running."
         }
       ],
       "authorityChecks": [
@@ -3388,7 +3388,7 @@
         {
           "kind": "contains",
           "path": "frontend/app/windows/messaging.js",
-          "needle": "Keep StarNet running."
+          "needle": "Keep TJ Crew Station running."
         },
         {
           "kind": "contains",

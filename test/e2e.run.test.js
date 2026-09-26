@@ -183,7 +183,7 @@ function boot(port, env, attemptsLeft) {
     A.ok(firstSystem.indexOf('[RUNTIME]') >= 0, 'runtime identity block reaches the provider system prompt');
     A.ok(firstSystem.indexOf('Provider: openrouter') >= 0, 'runtime block names the selected provider');
     A.ok(firstSystem.indexOf('Requested model at run start: test/model') >= 0, 'runtime block names the requested model');
-    A.ok(firstSystem.indexOf('If the Commander asks what StarNet build, model, provider') >= 0, 'runtime block tells the agent to answer build/model/provider questions from host state');
+    A.ok(firstSystem.indexOf('If the Commander asks what TJ Crew Station build, model, provider') >= 0, 'runtime block tells the agent to answer build/model/provider questions from host state');
 
     // CURRENT-RELEASE INCIDENT: an orphaned tool result used to pass straight through OpenRouter and make
     // every replay fail with the same provider 400. Drive the malformed history through the real HTTP route,

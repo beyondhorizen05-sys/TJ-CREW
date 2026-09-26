@@ -746,7 +746,7 @@ const Harness = (() => {
         body: JSON.stringify(reqBody)
       });
     } catch (e) {
-      throw new Error('cannot reach the STARNET sidecar — start it with `npm start` (node sidecar/index.js)');
+      throw new Error('cannot reach the station sidecar — start it with `npm start` (node sidecar/index.js)');
     }
     // A pre-stream failure's TRUE reason lives in the response body — runRouteFailure's {"error":"sidecar
     // failure: Not signed in to ChatGPT …"} JSON, handleRun's "missing key/model", the token gate's "forbidden

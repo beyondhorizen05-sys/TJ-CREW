@@ -408,7 +408,7 @@ const Updates = (() => {
 
   function html() {
     if (!TAURI) {
-      return '<div class="fb-empty">DESKTOP UPDATES ARE AVAILABLE IN THE PACKAGED STARNET APP.<br><span>This browser preview cannot install native releases.</span></div>';
+      return '<div class="fb-empty">DESKTOP UPDATES ARE AVAILABLE IN THE PACKAGED TJ CREW STATION APP.<br><span>This browser preview cannot install native releases.</span></div>';
     }
     const update = state.update;
     const pct = CORE.progress(state.downloaded, state.contentLength);

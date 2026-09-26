@@ -997,7 +997,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       screen.appendChild(head); screen.appendChild(body);
       w.appendChild(screen);
       w.appendChild(mkEl('div', 'term-plate',
-        '<span>STARNET DYNAMICS</span><span class="term-knobs"><i class="knob"></i><i class="knob"></i></span>'));
+        '<span>TJ CREW DYNAMICS</span><span class="term-knobs"><i class="knob"></i><i class="knob"></i></span>'));
     } else {
       w.appendChild(head); w.appendChild(body);
       // Phase-2 chrome (generic, plain windows only — feature windows carry their own casing):
@@ -3252,7 +3252,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<p class="sk-note sk-lib-intro">Reusable procedures this agent created or learned. These appear as a compact index in future runs; the agent loads the full body only when a task matches.</p>' +
       '<div id="sk-agent" class="sk-lib"><div class="sk-loading">loading agent skills…</div></div>';
     const secExchange =
-      '<p class="sk-note sk-lib-intro">Install a complete open skill package from a public HTTPS or GitHub <b>SKILL.md</b>. StarNet freezes the instructions and support files under one SHA-256 before review. Missing, oversized, unsafe, or partial packages are refused.</p>' +
+      '<p class="sk-note sk-lib-intro">Install a complete open skill package from a public HTTPS or GitHub <b>SKILL.md</b>. TJ Crew Station freezes the instructions and support files under one SHA-256 before review. Missing, oversized, unsafe, or partial packages are refused.</p>' +
       '<div class="sk-exchange-form"><label for="sk-exchange-url">SKILL.MD SOURCE</label>' +
         '<div class="sk-exchange-row"><input id="sk-exchange-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://github.com/owner/repo/blob/main/SKILL.md">' +
         '<button id="sk-exchange-inspect" class="consent-btn" type="button">INSPECT</button></div>' +
@@ -5213,7 +5213,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         .catch(() => {
           _creditsUnlinkPending = false;
           _creditsUnlinkError = stage === 'keychain'
-            ? 'Could not clear the saved account credential. Unlink was not completed. Try UNLINK again; if it still fails, fully quit and reopen StarNet.'
+            ? 'Could not clear the saved account credential. Unlink was not completed. Try UNLINK again; if it still fails, fully quit and reopen TJ Crew Station.'
             : stage === 'station'
               ? 'Could not confirm that unlink completed. Refresh the account connection, then retry UNLINK if it is still linked.'
               : 'Unlink completed, but the account display could not refresh. Retry to load the linking options.';
@@ -6257,7 +6257,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="diag-build" class="dim" style="margin-top:6px;font-size:11px" hidden></div>' +
       // CLEAR NOTIFICATIONS moved to the NOTIFICATIONS section (where it belongs); this is now just the about note.
       '<h4 class="ms-h">ABOUT</h4>' +
-      '<p class="set-about">STARNET — gamified AI-agent harness.<br>Theme, display & audio preferences are saved locally on this machine. Manage planned tasks on the TASK BOARD and saved conversations under SESSIONS in COMMS.</p>';
+      '<p class="set-about">TJ CREW STATION — AI-agent harness.<br>Theme, display & audio preferences are saved locally on this machine. Manage planned tasks on the TASK BOARD and saved conversations under SESSIONS in COMMS.</p>';
 
     // Keep every control mounted and reachable; group existing nodes without replacing their IDs.
     function arrangeSettingsPane(el) {
@@ -9034,7 +9034,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const rewardHtml = q.reward ? '<div class="sub q-reward"><span class="q-field-label">REWARD</span>&#9670; ' + esc(q.reward) + '</div>' : '';
       const actionRow = (goBtn || queueBtn) ? '<div class="q-actions">' + goBtn + queueBtn + '</div>' : '';
       const lifeActions = q.kind === 'ledger' && q.status !== 'done' ? '<div class="q-life-quest" data-qid="' + esc(q.id) + '">'
-        + '<div class="sub q-owner">' + esc(q.executionMode === 'commander' ? 'YOUR ACTION' : q.executionMode === 'together' ? 'YOU + STARNET' : 'STARNET CAN HELP') + '</div>'
+        + '<div class="sub q-owner">' + esc(q.executionMode === 'commander' ? 'YOUR ACTION' : q.executionMode === 'together' ? 'YOU + TJ CREW' : 'TJ CREW CAN HELP') + '</div>'
         + (q.whyNow ? '<div class="sub">Why now: ' + esc(q.whyNow) + '</div>' : '')
         + (isPaused(q) ? '<div class="sub">' + esc(q.disposition.type === 'later' ? 'Saved for tomorrow' : q.disposition.type === 'too_big' ? 'Needs a smaller step' : 'Blocked') + (q.disposition.reason ? ': ' + esc(q.disposition.reason) : '') + '</div><button class="consent-btn q-quest-disposition" data-action="resume">RESUME</button>'
           : '<details><summary>CHANGE THIS RECOMMENDATION</summary><label>What needs to change?<input id="q-reason-' + esc(q.id) + '" class="q-disposition-reason" value="' + esc(questDrafts.get(q.id)?.reason || '') + '" maxlength="240" placeholder="For example: waiting for a reply, or only 15 minutes available"></label>'
@@ -9264,7 +9264,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (suggest) suggest.addEventListener('click', async () => {
       if (body._journeyPlanning) return;
       const form = body.querySelector('.q-life-manage'), title = form.querySelector('.q-new-goal').value.trim();
-      if (title.length < 4) { body._journeyPlanMessage = 'Tell StarNet a little about what you want to do first.'; planFeedback.textContent = body._journeyPlanMessage; form.querySelector('.q-new-goal').focus(); return; }
+      if (title.length < 4) { body._journeyPlanMessage = 'Tell TJ Crew Station a little about what you want to do first.'; planFeedback.textContent = body._journeyPlanMessage; form.querySelector('.q-new-goal').focus(); return; }
       const options = { motivation: form.querySelector('.q-new-motivation').value, constraints: form.querySelector('.q-new-constraints').value,
         successCondition: form.querySelector('.q-new-success').value, steps: form.querySelector('.q-new-steps').value };
       body._journeyPlanning = true; body._journeyPlan = null; rerender('quests', false);

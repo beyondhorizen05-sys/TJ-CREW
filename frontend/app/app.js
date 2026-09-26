@@ -231,7 +231,7 @@ const App = (() => {
     // sidecar/capability/office.js + capgate F1). So the identity must NOT promise web/files unconditionally; it
     // tells the agent to use whatever it's actually been granted and to SAY when a tool is missing (that's the
     // signal that teaches the Commander what to place next), never to pretend a reach it doesn't have.
-    let s = 'You are ' + name + ', an AI agent operating from a workstation aboard the STARNET station — a room '
+    let s = 'You are ' + name + ', an AI agent operating from a workstation aboard the TJ Crew station — a room '
       + 'your Commander (the user) is building for you. Address the user as "Commander" and keep a spark of personality. '
       + 'Your workstation grants you REAL tools — exactly the ones the Commander has placed in your room (web search/read, '
       + 'file read/write, a terminal, memory, and more as the station grows; compute to think is always yours). When the '
@@ -4860,7 +4860,7 @@ const App = (() => {
               setStatus('clean station ready — reopening now. Your account link and purchased credits were kept.' + where);
               try { location.reload(); } catch (_) {}
             } else {
-              setStatus('clean station prepared, but the station service is still blocked. Fully quit StarNet and reopen it. Your account link and purchased credits were kept.' + where);
+              setStatus('clean station prepared, but the station service is still blocked. Fully quit TJ Crew Station and reopen it. Your account link and purchased credits were kept.' + where);
             }
           } catch (error) {
             resetting = false;
@@ -4938,7 +4938,7 @@ const App = (() => {
         const root = String(row && row.root || 'local TJ Crew Station storage');
         const examples = Array.isArray(row && row.examples) && row.examples.length ? ' · ' + row.examples.slice(0, 4).join(', ') : '';
         return '<div><b>' + U.esc(kind) + '</b> — <code>' + U.esc(root) + '</code>' + U.esc(examples) + '</div>';
-      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local StarNet storage</div>';
+      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local TJ Crew Station storage</div>';
       const candidateHtml = candidates.map(row => {
         const when = row && row.updatedAt ? new Date(row.updatedAt).toLocaleString() : 'time unavailable';
         const size = row && row.bytes ? Math.max(1, Math.ceil(row.bytes / 1024)) + ' KB' : 'size unavailable';
