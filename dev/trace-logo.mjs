@@ -38,6 +38,10 @@ import { toRGBA, contentBBox, crop, densityField, blurField, normalizeField } fr
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const argv = process.argv.slice(2);
+const sflag = (name, dflt) => {
+  const hit = argv.find(a => a.startsWith(`--${name}=`));
+  return hit ? hit.slice(name.length + 3) : dflt;
+};
 const flag = (name, dflt) => {
   const hit = argv.find(a => a.startsWith(`--${name}=`));
   return hit ? Number(hit.split('=')[1]) : dflt;
@@ -206,7 +210,9 @@ const area = pts => {
 };
 
 // ---------- run ----------
-const master = toRGBA(decodePNG(readFileSync(path.join(REPO, 'frontend/assets/brand/starnet-logo.png'))));
+const MASTER_REL = sflag('master', 'frontend/assets/brand/starnet-logo.png');
+const MARK_LABEL = sflag('label', 'STARNET');
+const master = toRGBA(decodePNG(readFileSync(path.join(REPO, MASTER_REL))));
 const box = contentBBox(master);
 const art = crop(master, box);
 const FW = Math.round(art.width * FH / art.height);
@@ -222,9 +228,9 @@ const loops = stitch(isolines(field, FW, FH, ISO))
 const n = v => (Math.round(v * 100) / 100).toString();
 const d = loops.map(l => 'M' + l.map(p => `${n(p[0])} ${n(p[1])}`).join('L') + 'Z').join('');
 
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${FW} ${FH}" role="img" aria-label="STARNET">
-<title>STARNET</title>
-<!-- Traced from frontend/assets/brand/starnet-logo.png by dev/trace-logo.mjs, preset ${PRESET_NAME}
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${FW} ${FH}" role="img" aria-label="${MARK_LABEL}">
+<title>${MARK_LABEL}</title>
+<!-- Traced from ${MASTER_REL} by dev/trace-logo.mjs, preset ${PRESET_NAME}
      (field ${FW}x${FH}, sigma ${SIGMA100}@100, iso ${ISO}, rdp ${EPS100}@100, smooth ${SMOOTH}).
      These are the master art's OWN forms recovered from its perceived-density field, not a redraw.
      Regenerate, never hand-edit; rerun the script if the master ever changes.
