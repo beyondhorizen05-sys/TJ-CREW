@@ -18,7 +18,7 @@
   "expectedClaimCount": 37,
   "releaseSurface": {
     "algorithm": "sha256",
-    "sourceCommit": "4f9b451f3544bd6453af3c057f49baa674ece8b3",
+    "sourceCommit": "d9504384225710e3807ec9d1101c90cf98acfb20",
     "pathSetSha256": "624df0d0e5b2511e74e175d045f26a8fd916195933e6750693b47d486e2e7b31",
     "files": [
       {
@@ -568,8 +568,8 @@
       },
       {
         "path": "frontend/app/keycta.js",
-        "bytes": 14536,
-        "sha256": "f72ef8bf9540ee2317c75caefc385644645896d8778f48f158d7c2c97e2043a0"
+        "bytes": 14508,
+        "sha256": "2c95a2a6cd0d7996bf3a0c1362f031f552d577a0db269b8eb3d6bb7c0ec00808"
       },
       {
         "path": "frontend/app/launchmemory.js",
