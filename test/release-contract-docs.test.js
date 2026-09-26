@@ -18,7 +18,7 @@ const website = [
   read('website/docs/troubleshooting.html')
 ].join('\n');
 
-const buildMatrix = releaseTrain.match(/\n  build:\n[\s\S]*?\n    runs-on:/);
+const buildMatrix = releaseTrain.match(/\r?\n  build:\r?\n[\s\S]*?\r?\n    runs-on:/);
 assert.ok(buildMatrix, 'release train build matrix is readable');
 assert.match(buildMatrix[0], /target: win-x64/);
 assert.match(buildMatrix[0], /target: darwin-arm64/);

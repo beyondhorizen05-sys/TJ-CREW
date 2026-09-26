@@ -72,6 +72,12 @@ current location and verification steps).
 > TJ Crew Station are still being set up — until they are, install from a signed release
 > linked in [INSTALL.md](INSTALL.md) and verify it per the instructions there.
 
+The public release train is configured to fail closed unless Windows Authenticode,
+macOS Developer ID + notarization, and updater-signature checks all pass. These are
+**release-pipeline requirements, not proof** of any particular installed download:
+if your OS reports an unknown publisher or a missing signature, stop and report the
+release and asset name rather than bypassing the warning.
+
 ## Run from source
 
 Requirements: Node.js 18+ (Node.js 22 matches CI), Git. Rust and the
