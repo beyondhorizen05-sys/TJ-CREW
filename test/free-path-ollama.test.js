@@ -1,9 +1,9 @@
 'use strict';
 // free-path-ollama.test.js — the zero-key path is a real, honest choice (GitHub issue #6).
 //
-// A user who unlinked their StarNet account (hero provider still `starnet`) was shown "no STARNET key — ADD IN
-// SETTINGS": a key that does not exist, for a provider they no longer wanted, with no way to pick another brain
-// or the free local one. This locks:
+// A user whose saved provider is the legacy managed id with no linked account gets a working
+// remedy — switch provider or the free local one — never a key prompt for a key that does not
+// exist. This locks:
 //   1. KeyCTA names the REAL gap (unlinked vs no key) and offers three doors: fix it · switch provider · run
 //      free locally (Ollama).
 //   2. The Ollama door is TRUTHFUL: it only switches the brain after a FRESH sidecar probe says Ollama answers;
@@ -85,7 +85,7 @@ global.App.currentAgent = () => ({ name: 'NOVA', onboarded: true });
   ok(/RUN FREE LOCALLY \(OLLAMA\)/.test(keycta) && /SET UP OLLAMA/.test(keycta), 'the free door has a proven label and an honest unproven label');
   ok(/ollamaReady \? '◇ RUN FREE LOCALLY/.test(keycta), 'the "run free" label is gated on the sidecar probe verdict (truthful telemetry)');
   ok(/Harness\.probeProvider\('ollama'\)/.test(keycta), 'the verdict comes from the sidecar probe route, not a local guess');
-  ok(/LINK STARNET/.test(keycta), 'an unlinked starnet station is offered a LINK, not a key');
+  ok(/PICK A WORKING BRAIN/.test(keycta), 'an unlinked legacy pick is offered a provider switch, not a link');
   ok(/openTerm\('settings', 'providers'\)/.test(keycta), 'every door lands on the PROVIDERS section of settings');
 
   const index = read('frontend/index.html');
@@ -94,8 +94,9 @@ global.App.currentAgent = () => ({ name: 'NOVA', onboarded: true });
   ok(/id="ollama-status"/.test(index), 'the ollama block carries a live status line');
   ok(/ollama\.com/.test(index) && /ollama pull/.test(index), 'the ollama block points at the install + pull steps');
   ok(/local models are smaller than the cloud ones/.test(index), 'the ollama block carries the honest quality caveat');
-  // existing chips untouched (no reorder / no removal)
-  for (const p of ['starnet', 'grok', 'kimi', 'openrouter', 'openai', 'anthropic', 'gemini', 'custom']) ok(new RegExp('data-prov="' + p + '"').test(index), 'chip ' + p + ' still present');
+  // existing chips untouched (no reorder / no removal — except the retired managed hero)
+  for (const p of ['grok', 'kimi', 'openrouter', 'openai', 'anthropic', 'gemini', 'custom']) ok(new RegExp('data-prov="' + p + '"').test(index), 'chip ' + p + ' still present');
+  ok(!/data-prov="starnet"/.test(index), 'the retired managed chip is gone from genesis');
 
   const app = read('frontend/app/app.js');
   ok(/const isOllama = pickedProvider === 'ollama';/.test(app) && /el\('ollama-block'\)[\s\S]{0,80}toggle\('hidden', !isOllama\)/.test(app), 'selectProviderUI shows the ollama block only while OLLAMA is picked');
