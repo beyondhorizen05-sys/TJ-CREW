@@ -1,25 +1,25 @@
-# Installing StarNet (Desktop)
+# Installing TJ Crew Station (Desktop)
 
-StarNet's public release train supports **Windows and macOS**:
+TJ Crew Station's public release train supports **Windows and macOS**:
 
 | Platform | Download this asset |
 | --- | --- |
-| **Windows** (10/11, 64-bit) | `StarNet_<version>_x64-setup.exe` |
-| **macOS — Apple Silicon** (M1/M2/M3/M4) | `StarNet_<version>_aarch64.dmg` |
-| **macOS — Intel** | `StarNet_<version>_x64.dmg` |
+| **Windows** (10/11, 64-bit) | `TJ Crew Station_<version>_x64-setup.exe` |
+| **macOS — Apple Silicon** (M1/M2/M3/M4) | `TJ Crew Station_<version>_aarch64.dmg` |
+| **macOS — Intel** | `TJ Crew Station_<version>_x64.dmg` |
 
 Linux packages may be produced by the manual/internal desktop-build workflow, but Linux is not
 part of the public release train and is not a supported release target.
 
-Download from the [StarNet releases page](https://github.com/androoAGI/starnet-releases/releases/latest).
+Download from the TJ Crew Station releases page linked alongside the release notes.
 Use only an asset attached to the release you intend to install.
 
 ## What the public release train guarantees
 
 The tagged public workflow is configured to fail closed unless all of these checks pass:
 
-- The Windows app and installer have valid Authenticode signatures, the expected publisher,
-  and a trusted timestamp.
+- The Windows app and installer have valid Authenticode signatures, the expected publisher
+  (TJ Crew), and a trusted timestamp.
 - Both macOS architectures have Developer ID signatures. Their bundled native dependencies
   are signed and timestamped, and the DMGs are accepted and stapled by Apple notarization.
 - Every platform updater artifact has a valid updater signature and is included in the one
@@ -37,10 +37,10 @@ release trust from a successful local build.
 
 ## Windows
 
-1. Run `StarNet_<version>_x64-setup.exe`.
-2. Confirm Windows identifies the publisher expected by the release notes before approving the
+1. Run `TJ Crew Station_<version>_x64-setup.exe`.
+2. Confirm Windows identifies the publisher expected by the release notes (TJ Crew) before approving the
    installer.
-3. Complete the installer, then launch StarNet from the Start menu.
+3. Complete the installer, then launch TJ Crew Station from the Start menu.
 
 An Authenticode signature does not guarantee that SmartScreen is silent. A new certificate can
 still have limited reputation. If SmartScreen shows **Windows protected your PC**, inspect the
@@ -56,8 +56,8 @@ To uninstall, use **Settings → Apps → Installed apps**.
 
 1. Choose `aarch64.dmg` for Apple Silicon or `x64.dmg` for an Intel Mac. Check **Apple menu →
    About This Mac** if you are unsure.
-2. Open the DMG and drag **StarNet** into **Applications**.
-3. Launch StarNet from Applications.
+2. Open the DMG and drag **TJ Crew Station** into **Applications**.
+3. Launch TJ Crew Station from Applications.
 
 The public release train requires a Developer ID signature and a stapled Apple notarization
 ticket. A public DMG should therefore pass Gatekeeper normally. Do **not** clear quarantine with
@@ -65,30 +65,31 @@ ticket. A public DMG should therefore pass Gatekeeper normally. Do **not** clear
 damaged, from an unidentified developer, or cannot be checked for malicious software, stop and
 report the release tag, asset name, Mac architecture, and macOS version.
 
-To uninstall, quit StarNet and drag it from **Applications** to the Trash.
+To uninstall, quit TJ Crew Station and drag it from **Applications** to the Trash.
 
 ## Run free with a local model
 
-StarNet does not require an API key or a StarNet account. Install [Ollama](https://ollama.com),
+TJ Crew Station does not require an API key or a managed account. Install [Ollama](https://ollama.com),
 pull a model (`ollama pull llama3.1`), and choose **OLLAMA** as the provider — on the first-run
-brain screen, or later under **SETTINGS → PROVIDERS**. StarNet reaches Ollama at `127.0.0.1:11434`
+brain screen, or later under **SETTINGS → PROVIDERS**. TJ Crew Station reaches Ollama at `127.0.0.1:11434`
 and shows it as ready only after it has listed your local models. Local models are smaller than
 cloud models: expect slower, rougher results on long tasks.
 
 ## Updates
 
 The public release train produces signed updater artifacts for Windows and both Mac
-architectures. StarNet's Update Center checks the public manifest and verifies a downloaded
+architectures. TJ Crew Station's Update Center checks the public manifest and verifies a downloaded
 update against the updater public key embedded in the app before installation. Updater signing
 is separate from Authenticode, Developer ID signing, and Apple notarization; the public train
 requires all applicable layers.
 
-On Windows, current manual installers detect an older StarNet installation and use the same
+On Windows, current manual installers detect an older installation and use the same
 in-place update mode as Update Center. They do not depend on the older installation's
 `uninstall.exe`, and the user's station data remains outside the application directory. If an
-older installer still shows an **Already Installed** page, quit StarNet from its tray icon,
-choose **Do not uninstall**, and continue. Do not delete `%APPDATA%\ai.skynet.harness` as an
-update workaround.
+older installer still shows an **Already Installed** page, quit TJ Crew Station from its tray icon,
+choose **Do not uninstall**, and continue. Do not delete the application-data workspace folder as an
+update workaround (legacy installs keep data under `%APPDATA%\ai.skynet.harness`; newer installs
+use the TJ Crew Station data root — the app migrates prior data forward automatically).
 
 This describes the supported update path. It does not claim that an update was exercised on an
 installed copy from this candidate. If the Update Center cannot complete an update, download the
@@ -97,5 +98,6 @@ automatic update behavior.
 
 ## Support
 
-Report installer, Gatekeeper, SmartScreen, or updater problems to **androo.agi@gmail.com**. Include
-the release tag, exact asset name, OS version, CPU architecture, and the complete warning text.
+Report installer, Gatekeeper, SmartScreen, or updater problems to the support address published
+with the release. Include the release tag, exact asset name, OS version, CPU architecture, and
+the complete warning text.
